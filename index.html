@@ -48,15 +48,17 @@
       <input id="customerName" type="text" placeholder="Enter customer name">
       <label for="customerPhone">Phone Number</label>
       <input id="customerPhone" type="text" placeholder="Enter phone number">
+      <label for="customerEmail">Email Address</label>
+      <input id="customerEmail" type="email" placeholder="Enter customer email">
       <label for="customerAddress">Property Address</label>
       <input id="customerAddress" type="text" placeholder="Enter property address">
     </div>
 
-  <div class="card">
-  <h2>1. Property ZIP Code</h2>
-  <input id="area" placeholder="Enter property ZIP code">
-  <div id="zoneBox" style="display:none;"></div>
-</div>
+    <div class="card">
+      <h2>1. Property ZIP Code</h2>
+      <input id="area" placeholder="Enter property ZIP code">
+      <div id="zoneBox" style="display:none;"></div>
+    </div>
 
     <div class="card" id="plansCard" style="display:none;">
       <h2>2. Select Plan</h2>
@@ -157,6 +159,9 @@
       <button onclick="sendTextMessage()" style="margin-top:15px; padding:14px; background:#0f172a; color:white; border:none; border-radius:12px;">Open Text Message</button>
       <button onclick="copyQuote()" style="margin-top:10px; padding:12px; background:#64748b; color:white; border:none; border-radius:12px;">Copy Quote</button>
       <a href="https://calendly.com/mobileonsitehandyman/handyman-service-appointment" target="_blank" style="display:block; width:100%; box-sizing:border-box; margin-top:10px; padding:14px; background:#2563eb; color:white; border-radius:12px; text-decoration:none; text-align:center;">Book Appointment</a>
+      <button onclick="generateInvoice()" style="margin-top:10px; padding:14px; background:#047857; color:white; border:none; border-radius:12px;">Generate Invoice</button>
+      <button onclick="downloadInvoice()" style="margin-top:10px; padding:14px; background:#64748b; color:white; border:none; border-radius:12px;">Download Invoice</button>
+      <button onclick="saveInvoice()" style="margin-top:10px; padding:14px; background:#0f172a; color:white; border:none; border-radius:12px;">Save Invoice to Database</button>
       <div id="copyStatus" style="margin-top:8px; font-size:14px; color:#059669; font-weight:600;"></div>
     </div>
   </div>
@@ -266,6 +271,7 @@ function updateQuote() {
 function generateQuote() {
   const customerName = document.getElementById("customerName").value || "Customer";
   const customerPhone = document.getElementById("customerPhone").value || "";
+  const customerEmail = document.getElementById("customerEmail").value || "";
   const customerAddress = document.getElementById("customerAddress").value || "";
   const total = document.getElementById("totalPrice").textContent;
   const planLabel = planDisplayNames[selectedPlan] || selectedPlan;
@@ -279,6 +285,112 @@ function generateQuote() {
   const text = "Hi " + customerName + ",\n\nThis is Tim with Mobile Onsite Handyman Services.\n\nHere is your service quote:\n\n" + planLabel + bundleText + "\n\nProperty: " + customerAddress + "\nPhone: " + customerPhone + "\n\nTotal: " + total + "\n\nThis includes all selected services, add-ons, and tax.\n\nLet me know if you'd like to schedule — I have availability this week.\n\nThanks,\nTim\nMobile Onsite Handyman\n951-388-4744";
   document.getElementById("quoteOutput").value = text;
 }
+
+function generateInvoice() {
+  const customerName = document.getElementById("customerName").value || "Customer";
+  const customerPhone = document.getElementById("customerPhone").value || "";
+  const customerEmail = document.getElementById("customerEmail").value || "";
+  const customerAddress = document.getElementById("customerAddress").value || "";
+  const total = document.getElementById("totalPrice").textContent;
+  const planLabel = planDisplayNames[selectedPlan] || selectedPlan;
+
+  let bundleText = "";
+  if (document.getElementById("irrigationBundle")?.checked) {
+    if (selectedPlan === "plan1") bundleText = "\nIrrigation Bundle Added ($109)";
+    if (selectedPlan === "plan1biannual") bundleText = "\nIrrigation Bundle Added ($99)";
+    if (selectedPlan === "plan2") bundleText = "\nIrrigation Bundle Added ($99)";
+    if (selectedPlan === "plan3") bundleText = "\nIrrigation Bundle Added ($79)";
+  }
+
+  const text =
+    "INVOICE\n\n" +
+    "Mobile Onsite Handyman Services LLC\n" +
+    "Phone: 951-388-4744\n\n" +
+    "Bill To: " + customerName + "\n" +
+    "Phone: " + customerPhone + "\n" +
+    "Email: " + customerEmail + "\n" +
+    "Property: " + customerAddress + "\n\n" +
+    "Work Completed:\n" +
+    "Service: Annual Home Maintenance\n" +
+    "Plan: " + planLabel + bundleText + "\n\n" +
+    "Amount Due: " + total + "\n\n" +
+    "Accepted Payment Methods:\n" +
+    "- Cash\n" +
+    "- Zelle\n" +
+    "- Venmo\n" +
+    "- Cash App\n" +
+    "- Credit / Debit Card\n\n" +
+    "Payment Status: Due upon completion\n\n" +
+    "Thank you,\n" +
+    "Tim\n" +
+    "Mobile Onsite Handyman Services LLC";
+
+  document.getElementById("quoteOutput").value = text;
+}
+
+function downloadInvoice() {
+  const text = document.getElementById("quoteOutput").value;
+
+  if (!text) {
+    document.getElementById("copyStatus").textContent = "Generate the invoice first.";
+    return;
+  }
+
+  const customerName = document.getElementById("customerName").value || "customer";
+  const safeName = customerName.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+  const date = new Date().toISOString().slice(0, 10);
+
+  const fileName = "maintenance_invoice_" + safeName + "_" + date + ".txt";
+  const blob = new Blob([text], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+
+  URL.revokeObjectURL(url);
+
+  document.getElementById("copyStatus").textContent = "Invoice downloaded.";
+}
+
+async function saveInvoice() {
+  const data = {
+    invoiceNumber: "MAINT-INV-" + Date.now(),
+    customerName: document.getElementById("customerName").value || "",
+    phone: document.getElementById("customerPhone").value || "",
+    email: document.getElementById("customerEmail").value || "",
+    address: document.getElementById("customerAddress").value || "",
+    service: "Annual Maintenance",
+    type: planDisplayNames[selectedPlan] || selectedPlan,
+    total: document.getElementById("totalPrice").textContent || "",
+    paymentStatus: "Due upon completion",
+    paymentMethod: "Cash / Zelle / Venmo / Cash App / Card",
+    notes: document.getElementById("quoteOutput").value || ""
+  };
+
+  try {
+    const response = await fetch("https://script.google.com/macros/s/AKfycbzpAvHREQwQRzolPg2KGiAIN86c5x7T6we86_NmKt7bMfIU90X4Wd3mXux19R05w4EtnQ/exec", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const result = await response.json();
+
+    if (result.result === "success") {
+      document.getElementById("copyStatus").textContent = "Invoice saved to database.";
+    } else {
+      document.getElementById("copyStatus").textContent = "Save failed.";
+    }
+  } catch (error) {
+    console.error(error);
+    document.getElementById("copyStatus").textContent = "Connection error.";
+  }
+}
+
 function sendTextMessage() { const phone = document.getElementById("customerPhone").value || ""; const quoteText = document.getElementById("quoteOutput").value || ""; if (!quoteText) { alert("Generate the quote first."); return; } if (!phone) { alert("Enter customer phone number."); return; } const cleanedPhone = phone.replace(/\D/g, ""); const smsLink = "sms:" + cleanedPhone + "?body=" + encodeURIComponent(quoteText); window.location.href = smsLink; }
 function copyQuote() { const text = document.getElementById("quoteOutput").value; const status = document.getElementById("copyStatus"); if (!text) { status.textContent = "Generate the quote first."; return; } try { navigator.clipboard.writeText(text); status.textContent = "✓ Quote copied"; } catch (err) { status.textContent = "Copy not supported. Copy manually from the quote box."; } }
 area.addEventListener("input", updateQuote);
