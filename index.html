@@ -366,7 +366,7 @@ async function saveInvoice() {
     total: document.getElementById("totalPrice").textContent || "",
     paymentStatus: "Due upon completion",
     paymentMethod: "Cash / Zelle / Venmo / Cash App / Card",
-    notes: document.getElementById("quoteOutput").value || ""
+  notes: planDisplayNames[selectedPlan] || selectedPlan 
   };
 
   try {
