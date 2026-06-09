@@ -357,6 +357,7 @@ function downloadInvoice() {
 async function saveInvoice() {
   const data = {
     invoiceNumber: "MAINT-INV-" + Date.now(),
+    sourceApp: "Annual Maintenance Quote App",
     customerName: document.getElementById("customerName").value || "",
     phone: document.getElementById("customerPhone").value || "",
     email: document.getElementById("customerEmail").value || "",
