@@ -155,7 +155,26 @@
       </div>
 
       <button onclick="generateQuote()" style="margin-top:15px; padding:14px; background:#047857; color:white; border:none; border-radius:12px;">Generate Quote Text</button>
-      <textarea id="quoteOutput" style="height:140px;"></textarea>
+
+<label>Payment Status</label>
+<select id="paymentStatus">
+  <option value="Due upon completion">Due upon completion</option>
+  <option value="Paid">Paid</option>
+  <option value="Partial Payment">Partial Payment</option>
+</select>
+
+<label>Payment Method</label>
+<select id="paymentMethod">
+  <option value="">Select payment method</option>
+  <option value="Cash">Cash</option>
+  <option value="Zelle">Zelle</option>
+  <option value="Venmo">Venmo</option>
+  <option value="Cash App">Cash App</option>
+  <option value="Credit / Debit Card">Credit / Debit Card</option>
+  <option value="Check">Check</option>
+</select>
+
+<textarea id="quoteOutput" style="height:140px;"></textarea>
       <button onclick="sendTextMessage()" style="margin-top:15px; padding:14px; background:#0f172a; color:white; border:none; border-radius:12px;">Open Text Message</button>
       <button onclick="copyQuote()" style="margin-top:10px; padding:12px; background:#64748b; color:white; border:none; border-radius:12px;">Copy Quote</button>
       <a href="https://calendly.com/mobileonsitehandyman/handyman-service-appointment" target="_blank" style="display:block; width:100%; box-sizing:border-box; margin-top:10px; padding:14px; background:#2563eb; color:white; border-radius:12px; text-decoration:none; text-align:center;">Book Appointment</a>
@@ -365,8 +384,9 @@ async function saveInvoice() {
     service: "Annual Maintenance",
     type: planDisplayNames[selectedPlan] || selectedPlan,
     total: document.getElementById("totalPrice").textContent || "",
-    paymentStatus: "Due upon completion",
-    paymentMethod: "Cash / Zelle / Venmo / Cash App / Card",
+  paymentStatus: document.getElementById("paymentStatus").value || "Due upon completion",
+  paymentMethod: document.getElementById("paymentMethod").value || "",
+    
   notes: planDisplayNames[selectedPlan] || selectedPlan 
   };
 
