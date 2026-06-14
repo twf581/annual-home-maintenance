@@ -154,6 +154,8 @@
         <button class="secondary-btn" onclick="copyQuote()">Copy Quote</button>
       </div>
 
+      <button class="dark-btn" onclick="saveQuoteToDatabase()">Save Quote to Database</button>
+
       <a class="book-btn" id="bookLink" href="https://calendly.com/mobileonsitehandyman/handyman-service-appointment" target="_blank">Book Inspection</a>
       <div id="copyStatus" style="margin-top:8px; font-size:14px; font-weight:700; color:#1d4ed8;"></div>
     </div>
@@ -344,6 +346,67 @@
       document.getElementById('quoteOutput').value = text;
     }
 
+
+
+    async function saveQuoteToDatabase() {
+      updateQuote();
+
+      const customerName = document.getElementById('customerName').value || '';
+      const customerPhone = document.getElementById('customerPhone').value || '';
+      const customerEmail = document.getElementById('customerEmail').value || '';
+      const customerAddress = document.getElementById('customerAddress').value || '';
+      const zip = document.getElementById('zip').value || '';
+      const propertyType = document.getElementById('propertyType').value;
+      const sqft = document.getElementById('sqft').value || '';
+      const stories = document.getElementById('stories').value || '';
+      const total = document.getElementById('totalPrice').textContent || '';
+
+      const chosenAddOns = [];
+      document.querySelectorAll('.addon-check').forEach(cb => {
+        if (cb.checked) {
+          chosenAddOns.push(cb.parentElement.textContent.trim());
+        }
+      });
+
+      const propertyTypeLabel = propertyType === 'condo' ? 'Condo / Townhome' : 'Single Family Home';
+      const typeText =
+        propertyTypeLabel +
+        (sqft ? ' - ' + sqft + ' sq ft' : '') +
+        (stories ? ' - ' + stories + ' story' : '') +
+        (chosenAddOns.length ? ' - Add-ons: ' + chosenAddOns.join(', ') : '');
+
+      const data = {
+        invoiceNumber: 'INSP-QUOTE-' + Date.now(),
+        sourceApp: 'Inspection Quote App',
+        customerName: customerName,
+        phone: customerPhone,
+        email: customerEmail,
+        address: customerAddress + (zip ? ' ZIP: ' + zip : ''),
+        service: 'Property Inspection',
+        type: typeText,
+        total: total,
+        paymentStatus: 'Quote Sent',
+        paymentMethod: '',
+        notes: typeText
+      };
+
+      try {
+        await fetch('https://script.google.com/macros/s/AKfycbzpAvHREQwQRzolPg2KGiAIN86c5x7T6we86_NmKt7bMfIU90X4Wd3mXux19R05w4EtnQ/exec', {
+          method: 'POST',
+          mode: 'no-cors',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'text/plain'
+          }
+        });
+
+        document.getElementById('copyStatus').textContent =
+          'Inspection quote sent to database. Check Google Sheets.';
+      } catch (error) {
+        console.error(error);
+        document.getElementById('copyStatus').textContent = 'Connection error.';
+      }
+    }
 
     function openGmailQuote() {
       const customerEmail = document.getElementById('customerEmail').value || '';
