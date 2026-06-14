@@ -1,479 +1,422 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mobile Onsite Handyman Services LLC - Maintenance Quote Tool</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Impact Property Inspections - Quote App</title>
   <style>
     body { font-family: Arial, sans-serif; background:#f8fafc; margin:0; padding:16px; color:#0f172a; }
-    .wrap { max-width:900px; margin:0 auto; }
-    .hero { background:linear-gradient(90deg,#0f172a,#047857); color:white; border-radius:24px; padding:24px; margin-bottom:16px; }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    .hero { background: linear-gradient(135deg,#0f172a 0%,#1d4ed8 55%,#0ea5e9 100%); color:white; border-radius:24px; padding:24px; margin-bottom:16px; }
+    .hero-kicker { font-size:12px; letter-spacing:.15em; text-transform:uppercase; opacity:.85; }
     .card { background:white; border-radius:20px; padding:20px; margin-bottom:16px; box-shadow:0 4px 16px rgba(0,0,0,.08); }
+    .hidden { display:none; }
+    .grid-2 { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+    .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
     input, select, button, textarea { width:100%; padding:14px; border-radius:14px; border:1px solid #cbd5e1; font-size:16px; box-sizing:border-box; margin-top:6px; margin-bottom:10px; }
-    button { cursor:pointer; }
-    .plan-btn { text-align:left; background:white; margin-bottom:10px; padding:14px; border-radius:14px; border:1px solid #cbd5e1; cursor:pointer; }
-    .plan-btn.active { border:2px solid #059669; background:#ecfdf5; }
-    .muted { font-size:12px; text-transform:uppercase; color:#64748b; }
-    .big { font-size:30px; font-weight:bold; }
-    .greenbox { background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; border-radius:14px; padding:14px; }
-    .graybox { background:#f1f5f9; border-radius:14px; padding:14px; }
-    .note { font-size:14px; color:#475569; }
-    .details { display:none; text-align:left; margin-top:10px; font-size:14px; line-height:1.55; }
-    .detail-btn { margin-top:10px; background:#e2e8f0; }
-    .summary-grid { display:grid; gap:12px; }
-    .small { font-size:14px; color:#475569; }
-    .inline-checkbox { width:auto; margin-right:8px; margin-bottom:0; vertical-align:middle; }
+    button { cursor:pointer; border:none; }
     label { display:block; font-weight:600; margin-top:8px; }
+    .note { background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px; font-size:14px; color:#475569; line-height:1.5; }
+    .zone-box { background:#ecfeff; border:1px solid #a5f3fc; color:#155e75; border-radius:14px; padding:14px; }
+    .summary-box { background:#f8fafc; border-radius:14px; padding:14px; border:1px solid #e2e8f0; margin-bottom:10px; }
+    .summary-total { background:#dbeafe; border-color:#93c5fd; color:#1e3a8a; }
+    .muted { font-size:12px; text-transform:uppercase; color:#64748b; letter-spacing:.08em; }
+    .big { font-size:30px; font-weight:700; margin-top:6px; }
+    .addon { border:1px solid #e2e8f0; background:#fff; border-radius:14px; padding:14px; margin-bottom:10px; }
+    .inline-check { width:auto; margin-right:8px; margin-bottom:0; }
+    .primary-btn { background: linear-gradient(135deg,#1d4ed8,#3b82f6); color:white; font-weight:700; }
+    .dark-btn { background:#0f172a; color:white; font-weight:700; }
+    .secondary-btn { background:#64748b; color:white; font-weight:700; }
+    .book-btn { display:block; width:100%; box-sizing:border-box; margin-top:10px; padding:14px; background:linear-gradient(135deg,#2563eb,#60a5fa); color:white; border-radius:14px; text-decoration:none; text-align:center; font-weight:700; }
+    @media (max-width: 800px) { .grid-2, .grid-3 { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
   <div class="wrap">
-  <div class="hero">
-  <div style="font-size:12px;letter-spacing:.15em;text-transform:uppercase;opacity:.8;">
-    Annual Home Maintenance Quotes
-  </div>
-
-  <h1 style="margin:8px 0 4px 0;">
-    Mobile Onsite Handyman Service LLC
-  </h1>
-
-  <p style="margin:0;opacity:.9;">
-    Property maintenance plans for Southern California homeowners and property managers
-  </p>
-</div> 
+    <div class="hero">
+      <div class="hero-kicker">Instant Inspection Quote</div>
+      <h1 style="margin:8px 0 6px 0;">Impact Property Inspections</h1>
+      <p style="margin:0; opacity:.92; line-height:1.5;">ZIP-based home inspection pricing with property type, square footage, add-ons, deposit, and booking flow.</p>
+    </div>
 
     <div class="card">
       <h2>Customer Information</h2>
-      <label for="customerName">Customer Name</label>
-      <input id="customerName" type="text" placeholder="Enter customer name">
-      <label for="customerPhone">Phone Number</label>
-      <input id="customerPhone" type="text" placeholder="Enter phone number">
+      <div class="grid-2">
+        <div>
+          <label for="customerName">Customer Name</label>
+          <input id="customerName" placeholder="Enter customer name" />
+        </div>
+        <div>
+          <label for="customerPhone">Phone Number</label>
+          <input id="customerPhone" placeholder="Enter phone number" />
+        </div>
+      </div>
       <label for="customerEmail">Email Address</label>
-      <input id="customerEmail" type="email" placeholder="Enter customer email">
+      <input id="customerEmail" type="email" placeholder="Enter customer email" />
+
       <label for="customerAddress">Property Address</label>
-      <input id="customerAddress" type="text" placeholder="Enter property address">
+      <input id="customerAddress" placeholder="Enter property address" />
     </div>
 
     <div class="card">
       <h2>1. Property ZIP Code</h2>
-      <input id="area" placeholder="Enter property ZIP code">
-      <div id="zoneBox" style="display:none;"></div>
+      <input id="zip" placeholder="Enter property ZIP code" />
+      <div class="zone-box" id="zoneBox">Enter ZIP code and property info for price and scheduling.</div>
     </div>
 
-    <div class="card" id="plansCard" style="display:none;">
-      <h2>2. Select Plan</h2>
-      <div class="plan-btn" data-plan="plan1"></div>
-      <div class="plan-btn" data-plan="plan1biannual"></div>
-      <div class="plan-btn" data-plan="plan2"></div>
-      <div class="plan-btn" data-plan="plan3"></div>
-      <div class="plan-btn" data-plan="irrigation"></div>
-    </div>
-
-    <div class="card" id="filtersCard" style="display:none;">
-      <h2>3. Add-Ons & Materials</h2>
-      <p class="note">Add filters, detectors, irrigation zones, and related services below. One standard 1-inch filter is already included in applicable visits, so only enter extra filters here.</p>
-
-      <label for="filters">Extra filters needed (1 standard filter is already included per scheduled visit)</label>
-      <input id="filters" type="number" min="0" value="" placeholder="Enter extra quantity">
-
-      <label for="filterType">Filter type</label>
-      <select id="filterType">
-        <option value="standard">Standard 1-inch</option>
-        <option value="large">Large filter</option>
-        <option value="media">Media / 4-inch ($75)</option>
-        <option value="16x20x4">16x20x4 Filter ($40)</option>
-        <option value="20x25x4">20x25x4 Filter ($45)</option>
-      </select>
-
-      <button id="atticBtn" type="button">No Attic Access Charge</button>
-
-      <div style="margin-top:15px; padding:12px; border:1px solid #e2e8f0; border-radius:12px;">
-        <strong>Smoke / CO Detector Services</strong>
-
-        <label for="detectorType">Detector type</label>
-        <select id="detectorType">
-          <option value="none">No detector add-on</option>
-          <option value="hardwired">Hardwired Smoke Detector ($40 + tax)</option>
-          <option value="combo">Smoke/CO Detector ($70 + tax)</option>
-          <option value="battery">Battery Detector ($70 + tax)</option>
-        </select>
-
-        <label for="detectorQty">Number of detectors</label>
-        <input id="detectorQty" type="number" min="0" value="" placeholder="Enter quantity">
-
-        <label for="extraDetectorQty">Extra detector service ($20 each additional unit)</label>
-        <input id="extraDetectorQty" type="number" min="0" value="" placeholder="Enter quantity">
-
-        <label for="batteryServiceQty">Extra detector battery service ($22 each)</label>
-        <input id="batteryServiceQty" type="number" min="0" value="" placeholder="Enter quantity">
-
-        <label for="detectorLaborQty">Detector replacement labor ($45 each)</label>
-        <input id="detectorLaborQty" type="number" min="0" value="" placeholder="Enter quantity">
+    <div class="card hidden" id="propertyCard">
+      <h2>2. Property Details</h2>
+      <div class="grid-2">
+        <div>
+          <label for="propertyType">Property Type</label>
+          <select id="propertyType">
+            <option value="single">Single Family Home</option>
+            <option value="condo">Condo / Townhome</option>
+          </select>
+        </div>
+        <div>
+          <label for="stories">Stories</label>
+          <select id="stories">
+            <option value="1">1 Story</option>
+            <option value="2">2 Story</option>
+            <option value="3">3 Story / Complex</option>
+          </select>
+        </div>
       </div>
-
-      <div style="margin-top:15px; padding:12px; border:1px solid #e2e8f0; border-radius:12px;">
-        <strong>Irrigation Add-Ons</strong>
-
-        <label for="extraZones">Extra irrigation zones ($38 per zone)</label>
-        <input id="extraZones" type="number" min="0" value="" placeholder="Enter quantity">
+      <div class="grid-2">
+        <div>
+          <label for="sqft">Square Footage</label>
+          <input id="sqft" type="number" min="0" placeholder="Enter square footage" />
+        </div>
+        <div>
+          <label for="yearBuilt">Year Built</label>
+          <input id="yearBuilt" type="number" min="1800" placeholder="Optional" />
+        </div>
       </div>
-
-      <div style="margin-top:15px; padding:12px; border:1px solid #e2e8f0; border-radius:12px;">
-        <strong>Irrigation Bundle</strong>
-        <label><input id="irrigationBundle" type="checkbox" class="inline-checkbox"> Add irrigation maintenance bundle</label>
-      </div>
-
-      <div style="margin-top:15px; padding:12px; border:1px solid #e2e8f0; border-radius:12px;">
-        <strong>Property Manager Photos</strong>
-        <label><input id="pmPhotos" type="checkbox" class="inline-checkbox"> Include interior condition photos</label>
-        <label for="homeSqft">Home size (sq ft)</label>
-        <input id="homeSqft" type="number" min="0" value="" placeholder="Enter square footage">
+      <div class="note" id="timingNote">
+        Scheduling estimate will appear here after property details are entered.
       </div>
     </div>
 
-    <div class="card" id="summaryCard" style="display:none;">
+    <div class="card hidden" id="addonsCard">
+      <h2>3. Add-Ons</h2>
+      <div class="addon">
+        <label><input class="inline-check addon-check" type="checkbox" data-addon="sewer" /> Sewer Scope Inspection</label>
+      </div>
+      <div class="addon">
+        <label><input class="inline-check addon-check" type="checkbox" data-addon="termite" /> Termite / Wood Destroying Organism Inspection</label>
+      </div>
+      <div class="addon">
+        <label><input class="inline-check addon-check" type="checkbox" data-addon="mold" /> Mold / Moisture Assessment</label>
+      </div>
+      <div class="addon">
+        <label><input class="inline-check addon-check" type="checkbox" data-addon="thermal" /> Thermal Imaging</label>
+      </div>
+      <div class="addon">
+        <label><input class="inline-check addon-check" type="checkbox" data-addon="pool" /> Pool / Spa Inspection</label>
+      </div>
+      <div class="addon">
+        <label><input class="inline-check addon-check" type="checkbox" data-addon="rush" /> Rush / Priority Scheduling</label>
+      </div>
+    </div>
+
+    <div class="card hidden" id="summaryCard">
       <h2>4. Quote Summary</h2>
-      <div class="summary-grid">
-        <div class="graybox"><div class="muted">Base plan</div><div class="big" id="basePrice">$0</div></div>
-        <div class="graybox"><div class="muted">Materials (filters + detectors)</div><div class="big" id="materialsSubtotal">$0</div></div>
-        <div class="graybox"><div class="muted">Service & labor</div><div class="big" id="serviceSubtotal">$0</div></div>
-        <div class="graybox"><div class="muted">Materials tax (8.75%)</div><div class="big" id="materialsTax">$0</div></div>
-        <div class="graybox"><div class="muted">Add-ons total</div><div class="big" id="addOnPrice">$0</div></div>
-        <div class="greenbox"><div class="muted" style="color:#047857;">Estimated total</div><div class="big" id="totalPrice">$0</div></div>
-      </div>
-      <div class="small" style="margin-top:12px;">
-        Tax applies to materials only.<br><br>
-        <strong>General Service Notes:</strong><br>
-        All services are non-invasive visual and functional maintenance.<br>
-        Limited to accessible areas and safe working conditions.<br>
-        Additional detectors, filters, or materials beyond included limits may incur added cost.<br>
-        Service pricing may vary based on location, property size, and access conditions.<br><br>
-        <strong>Payment Policy:</strong><br>
-        Accepted payment methods: Zelle, Venmo, and credit cards.<br>
-        A 3.5% processing fee applies to credit card payments.<br>
-        Checks are accepted for approved property management accounts only.
+      <div class="grid-3">
+        <div class="summary-box">
+          <div class="muted">Base Inspection</div>
+          <div class="big" id="basePrice">$0.00</div>
+        </div>
+        <div class="summary-box">
+          <div class="muted">Add-Ons</div>
+          <div class="big" id="addOnsPrice">$0.00</div>
+        </div>
+        <div class="summary-box summary-total">
+          <div class="muted">Estimated Total</div>
+          <div class="big" id="totalPrice">$0.00</div>
+        </div>
       </div>
 
-      <button onclick="generateQuote()" style="margin-top:15px; padding:14px; background:#047857; color:white; border:none; border-radius:12px;">Generate Quote Text</button>
+      <div class="note" id="summaryDetails">
+        Quote details will appear here.
+      </div>
 
-<label>Payment Status</label>
-<select id="paymentStatus">
-  <option value="Due upon completion">Due upon completion</option>
-  <option value="Paid">Paid</option>
-  <option value="Partial Payment">Partial Payment</option>
-</select>
+      <div class="note" id="bookingLogicNote" style="margin-top:10px;">
+        Booking logic note will appear here.
+      </div>
 
-<label>Payment Method</label>
-<select id="paymentMethod">
-  <option value="">Select payment method</option>
-  <option value="Cash">Cash</option>
-  <option value="Zelle">Zelle</option>
-  <option value="Venmo">Venmo</option>
-  <option value="Cash App">Cash App</option>
-  <option value="Credit / Debit Card">Credit / Debit Card</option>
-  <option value="Check">Check</option>
-</select>
+      <button class="primary-btn" onclick="generateQuote()">Generate Quote Text</button>
+      <textarea id="quoteOutput" rows="10" placeholder="Quote text will appear here"></textarea>
 
-<textarea id="quoteOutput" style="height:140px;"></textarea>
-      <button onclick="openGmailQuote()" style="margin-top:15px; padding:14px; background:#0f172a; color:white; border:none; border-radius:12px;">Email with Gmail</button>
-      <button onclick="openEmailQuote()" style="margin-top:10px; padding:14px; background:#047857; color:white; border:none; border-radius:12px;">Email App</button>
-      <button onclick="copyQuote()" style="margin-top:10px; padding:12px; background:#64748b; color:white; border:none; border-radius:12px;">Copy Quote</button>
-      <a href="https://calendly.com/mobileonsitehandyman/handyman-service-appointment" target="_blank" style="display:block; width:100%; box-sizing:border-box; margin-top:10px; padding:14px; background:#2563eb; color:white; border-radius:12px; text-decoration:none; text-align:center;">Book Appointment</a>
-      <button onclick="generateInvoice()" style="margin-top:10px; padding:14px; background:#047857; color:white; border:none; border-radius:12px;">Generate Invoice</button>
-      <button onclick="downloadInvoice()" style="margin-top:10px; padding:14px; background:#64748b; color:white; border:none; border-radius:12px;">Download Invoice</button>
-      <button onclick="saveInvoice()" style="margin-top:10px; padding:14px; background:#0f172a; color:white; border:none; border-radius:12px;">Save Invoice to Database</button>
-      <div id="copyStatus" style="margin-top:8px; font-size:14px; color:#059669; font-weight:600;"></div>
+      <div class="grid-3">
+        <button class="dark-btn" onclick="openGmailQuote()">Email with Gmail</button>
+        <button class="primary-btn" onclick="openEmailQuote()">Email App</button>
+        <button class="secondary-btn" onclick="copyQuote()">Copy Quote</button>
+      </div>
+
+      <a class="book-btn" id="bookLink" href="https://calendly.com/mobileonsitehandyman/handyman-service-appointment" target="_blank">Book Inspection</a>
+      <div id="copyStatus" style="margin-top:8px; font-size:14px; font-weight:700; color:#1d4ed8;"></div>
     </div>
   </div>
 
-<script>
-const basePlans = { plan1:185, plan1biannual:300, plan2:275, plan3:395, irrigation:179 };
-const taxRate = 0.0875;
-const zoneExactZips = {
-  1: ["92543","92544","92545","92551","92552","92553","92554","92555","92556","92557","92570","92571"],
-  2: ["92313","92324","92335","92336","92337","92346","92373","92376","92401","92403","92404","92405","92407","92408","92501","92503","92504","92505","92506","92507","92508","92509","92584","92585","92586","92595","92879","92880","92881","92882","92883"],
-  3: ["91709","91730","91737","91739","91761","91762","91764","91784","91786","92028","92220","92223","92234","92260","92262","92264","92270","92307","92308","92344","92345","92392","92394","92395","92562","92563","92564","92590","92591","92592","92593","92860"],
-  4: ["92008","92009","92014","92024","92025","92026","92027","92037","92054","92056","92057","92064","92069","92078","92083","92084","92101","92102","92103","92104","92105","92109","92110","92111","92117","92120","92122","92123","92127","92602","92603","92604","92606","92612","92614","92618","92620","92626","92627","92629","92630","92637","92646","92647","92648","92649","92651","92652","92653","92657","92660","92661","92662","92663","92672","92673","92691","92692"]
-};
-const zonePrefixRanges = { 4: ["900","901","902","903","904","905","906","907","908","910","911","912","913","914","915","916","917","918"] };
-const zonesMeta = { 1:{ name:"Zone 1", label:"Budget", adjustment:0 }, 2:{ name:"Zone 2", label:"Standard", adjustment:20 }, 3:{ name:"Zone 3", label:"Premium", adjustment:45 }, 4:{ name:"Zone 4", label:"Coastal", adjustment:95 } };
-const planTitles = { plan1:"Plan 1 – Annual Maintenance Package ($185)", plan1biannual:"Plan 1 – Bi-Annual Maintenance Plan ($300)", plan2:"Plan 2 – Enhanced Maintenance Package ($275)", plan3:"Plan 3 – Comprehensive Property Care ($395)", irrigation:"Plan 4 – Annual Irrigation Maintenance Package ($179 Standalone)" };
-const planDisplayNames = { plan1:"Plan 1 – Annual Maintenance Package", plan1biannual:"Plan 1 – Bi-Annual Maintenance Plan", plan2:"Plan 2 – Enhanced Maintenance Package", plan3:"Plan 3 – Comprehensive Property Care", irrigation:"Plan 4 – Annual Irrigation Maintenance Package" };
-const planDetails = {
-  plan1:`Service Frequency: Once per year (recommended with optional upgrades to bi-annual)<br><br>1. Smoke & Carbon Monoxide Detector Service<br>• Test all smoke and CO detectors.<br>• Replace batteries (standard detector batteries included, up to 6 units).<br>• Verify proper operation and placement (visual check).<br>• Identify units that may require replacement due to age or malfunction (replacement quoted separately).<br><br>2. HVAC Air Return Filter Replacement<br>• Inspect existing filter condition.<br>• Replace one standard 1-inch thick air return filter (included).<br>• Ensure proper fit and airflow.<br>• Some filter sizes or types may require special ordering and will be quoted separately.<br><br>3. Plumbing Visual Inspection<br>• Inspect faucets for leaks, drips, or corrosion.<br>• Check under-sink plumbing and visible drain lines.<br>• Identify early signs of water damage or failure.<br>• Check toilet for leaks, flushing, and stability.<br><br>4. Light Fixtures & Ceiling Fan Check<br>• Inspect accessible interior light fixtures and ceiling fans.<br>• Verify proper operation (switches, speed settings, and function).<br>• Check for wobble, noise, or mounting concerns in ceiling fans.<br>• Identify faulty bulbs, switches, or visible wiring issues (non-invasive).<br><br>5. Interior Condition Photo Documentation (Property Manager Option: +$30)<br>• Provide interior condition photos for homes up to 2,000 sq ft.<br>• Document general condition at time of service.<br>• Capture visible issues or concerns for records and reporting.<br>• Photos and findings delivered via email for professional documentation and easy record keeping.`,
-  plan1biannual:`Bi-Annual Maintenance Plan includes two scheduled visits per year.<br><br>First visit includes full maintenance service as included in Plan 1.<br><br>Second visit is limited to HVAC filter replacement only (same filter service as included in Plan 1).<br><br>Each scheduled visit includes one standard HVAC filter replacement. Additional filters beyond the included one per visit will be charged accordingly.<br><br>Additional services during the second visit will be quoted as needed.`,
-  plan2:`Includes all services in Plan 1, plus the following additional services:<br><br>1. Water Heater Inspection & Flush<br>• Inspect water heater for proper operation and visible signs of wear or leaks.<br>• Check temperature/pressure relief valve (visual only).<br>• Perform tank flush to remove sediment buildup, where applicable.<br>• Identify potential issues or recommended maintenance (repairs or replacement quoted separately).<br><br>2. Dryer Vent Inspection & Cleaning<br>• Inspect accessible dryer vent system for lint buildup or airflow restriction.<br>• Clean dryer vent as needed to improve efficiency and reduce fire risk.<br>• Identify any damaged or improperly installed vent components (repairs or replacement quoted separately).<br>• Roof-mounted dryer vents on 2–3 story homes will require an additional charge.<br><br>3. Closet Door Adjustment<br>• Inspect closet doors for alignment and operation.<br>• Adjust tracks, rollers, or hinges as needed for proper function.<br>• Improve ease of use and help prevent further wear (replacement quoted if needed).<br><br>4. Door Hardware Maintenance<br>• Lubricate door locks, latches, and hinges.<br>• Tighten loose hardware including handles, strike plates, and hinges.<br>• Ensure smooth operation and proper door closure (replacement quoted if needed).`,
-  plan3:`Includes all services in Plan 1 and Plan 2, plus the following additional services:<br><br>1. Visual Roof Inspection<br>• Inspect roof from accessible vantage points.<br>• Identify visible signs of wear, damage, or aging.<br>• Check for missing, damaged, or deteriorated roofing materials.<br>• Inspect visible flashing, penetrations, and roof components.<br>• Limited to safe and accessible conditions; non-invasive with no destructive testing.<br><br>2. Exterior Home Inspection<br>• Inspect exterior walls, siding, and trim for visible damage or deterioration.<br>• Check windows and doors for visible seal or frame issues.<br>• Inspect eaves, fascia, and soffits in accessible areas.<br>• Observe drainage conditions around the home, including visible grading concerns.<br>• Identify maintenance items that may impact overall property condition.<br><br>3. Reporting & Documentation<br>• All findings documented with photos.<br>• Clear identification of maintenance items, monitor items, and recommended repairs.`,
-  irrigation:`This service is designed to ensure proper operation and efficiency of a 4-zone irrigation system through routine testing, adjustment, and controller optimization.<br><br>1. Irrigation System Zone Testing (Up to 4 Zones)<br>• Test all irrigation zones for proper operation.<br>• Verify coverage, pressure, and function of each zone.<br>• Identify non-functioning or irregular zones.<br><br>2. Sprinkler Head Adjustment<br>• Adjust sprinkler heads for proper spray pattern and direction.<br>• Improve coverage and reduce overspray or dry spots.<br>• Perform minor alignment corrections as needed.<br><br>3. Irrigation Controller Programming<br>• Inspect and adjust controller settings.<br>• Set or update watering schedule based on season and property needs.<br>• Verify proper zone timing and operation.<br>• Ensure system is programmed for efficient water usage.<br><br>Recommended Bundle Pricing<br>• Add to Plan 1: +$109<br>• Add to Plan 1 Bi-Annual: +$99<br>• Add to Plan 2: +$99<br>• Add to Plan 3: +$79<br><br>General Service Notes<br>• All services are non-invasive visual and functional maintenance.<br>• Limited to accessible areas and safe working conditions.<br>• Additional detectors, filters, or materials beyond included limits may incur added cost.<br>• Service pricing may vary based on location, property size, and access conditions.`
-};
-function zipToZone(zip) {
-  const digits = (zip || "").replace(/\D/g, "");
-  if (!digits) return null;
-  for (const zoneNum of ["1","2","3","4"]) { const exacts = zoneExactZips[zoneNum] || []; if (exacts.includes(digits)) return { zoneNumber: zoneNum, ...zonesMeta[zoneNum] }; }
-  for (const zoneNum of ["1","2","3","4"]) { const prefixes = zonePrefixRanges[zoneNum] || []; if (prefixes.some(prefix => digits.startsWith(prefix))) return { zoneNumber: zoneNum, ...zonesMeta[zoneNum] }; }
-  return null;
-}
-function formatCurrency(v) { return new Intl.NumberFormat("en-US", { style:"currency", currency:"USD", maximumFractionDigits:2 }).format(v || 0); }
-function getBasePlanPrice(plan, adj) { return plan === "irrigation" ? basePlans.irrigation + Math.round(adj * 0.75) : basePlans[plan] + adj; }
-function getFilterPrice(type) { if (type === "large") return 35; if (type === "media") return 75; if (type === "16x20x4") return 40; if (type === "20x25x4") return 45; return 25; }
-let selectedPlan = "plan1";
-let attic = false;
-let currentZone = null;
-const area = document.getElementById("area");
-const zoneBox = document.getElementById("zoneBox");
-const plansCard = document.getElementById("plansCard");
-const filtersCard = document.getElementById("filtersCard");
-const summaryCard = document.getElementById("summaryCard");
-const atticBtn = document.getElementById("atticBtn");
-function toggleDetails(plan) { const el = document.getElementById("details-" + plan); if (!el) return; el.style.display = (el.style.display === "none" || el.style.display === "") ? "block" : "none"; }
-function renderPlans() {
-  document.querySelectorAll(".plan-btn").forEach(btn => {
-    const key = btn.dataset.plan;
-    btn.classList.toggle("active", selectedPlan === key);
-    btn.innerHTML = "<strong>" + planTitles[key] + "</strong><br><span>" + formatCurrency(getBasePlanPrice(key, currentZone.adjustment)) + "</span>" + "<br><br><button type='button' class='detail-btn' onclick=\"event.stopPropagation(); toggleDetails('" + key + "');\">View Details</button>" + "<div id='details-" + key + "' class='details'>" + planDetails[key] + "</div>";
-  });
-}
-function updateQuote() {
-  const detected = zipToZone(area.value);
-  currentZone = detected;
+  <script>
+    const zoneExactZips = {
+      1: ["92543","92544","92545","92551","92552","92553","92554","92555","92556","92557","92570","92571"],
+      2: ["92313","92324","92335","92336","92337","92346","92373","92376","92401","92403","92404","92405","92407","92408","92501","92503","92504","92505","92506","92507","92508","92509","92584","92585","92586","92595","92879","92880","92881","92882","92883"],
+      3: ["91709","91730","91737","91739","91761","91762","91764","91784","91786","92028","92220","92223","92234","92260","92262","92264","92270","92307","92308","92344","92345","92392","92394","92395","92562","92563","92564","92589","92590","92591","92592","92593","92860"],
+      4: ["92008","92009","92014","92024","92025","92026","92027","92037","92054","92056","92057","92064","92069","92078","92083","92084","92101","92102","92103","92104","92105","92109","92110","92111","92117","92120","92122","92123","92127","92602","92603","92604","92606","92612","92614","92618","92620","92626","92627","92629","92630","92637","92646","92647","92648","92649","92651","92652","92653","92657","92660","92661","92662","92663","92672","92673","92691","92692"]
+    };
 
-  if (detected) {
-    zoneBox.textContent = "Service area confirmed";
-  } else {
-    zoneBox.textContent = "Enter property ZIP code to receive accurate pricing in your area";
-  }
-  if (!currentZone) { plansCard.style.display = "none"; filtersCard.style.display = "none"; summaryCard.style.display = "none"; return; }
-  plansCard.style.display = "block"; summaryCard.style.display = "block"; filtersCard.style.display = "block"; renderPlans();
-  let basePrice = getBasePlanPrice(selectedPlan, currentZone.adjustment);
-  const filterCountNum = Number(document.getElementById("filters").value || 0);
-  const selectedFilterType = document.getElementById("filterType").value;
-  let filterMaterialTotal = 0;
-  if (selectedPlan !== "irrigation") { filterMaterialTotal = filterCountNum * getFilterPrice(selectedFilterType); }
-  let detectorPrice = 0;
-  const detectorType = document.getElementById("detectorType").value;
-  const detectorQty = Number(document.getElementById("detectorQty").value || 0);
-  const extraDetectorQty = Number(document.getElementById("extraDetectorQty").value || 0);
-  const batteryServiceQty = Number(document.getElementById("batteryServiceQty").value || 0);
-  const detectorLaborQty = Number(document.getElementById("detectorLaborQty").value || 0);
-  const extraZones = Number(document.getElementById("extraZones").value || 0);
-  const irrigationBundle = document.getElementById("irrigationBundle").checked;
-  let irrigationBundlePrice = 0;
-  if (irrigationBundle) {
-    if (selectedPlan === "plan1") irrigationBundlePrice = 109;
-   if (selectedPlan === "plan1biannual") irrigationBundlePrice = 99;
-    if (selectedPlan === "plan2") irrigationBundlePrice = 99;
-    if (selectedPlan === "plan3") irrigationBundlePrice = 79;
-    irrigationBundlePrice += currentZone ? currentZone.adjustment : 0;
-  }
-  if (detectorType === "hardwired") detectorPrice = 40;
-  if (detectorType === "combo") detectorPrice = 70;
-  if (detectorType === "battery") detectorPrice = 70;
-  const detectorMaterialTotal = detectorPrice * detectorQty;
-  const detectorServiceTotal = (extraDetectorQty * 20) + (batteryServiceQty * 22) + (detectorLaborQty * 45);
-  const pmPhotos = document.getElementById("pmPhotos").checked;
-  const homeSqft = Number(document.getElementById("homeSqft").value || 0);
-  let pmPhotoTotal = 0;
-  if (pmPhotos) { if (homeSqft <= 2000) pmPhotoTotal = 30; else if (homeSqft <= 3000) pmPhotoTotal = 45; else if (homeSqft <= 4000) pmPhotoTotal = 60; else pmPhotoTotal = 60; pmPhotoTotal += currentZone ? currentZone.adjustment : 0; }
-  const irrigationServiceTotal = extraZones * 38;
-  const atticServiceTotal = attic ? 35 : 0;
-  const materialSubtotal = filterMaterialTotal + detectorMaterialTotal;
-  const serviceSubtotal = detectorServiceTotal + irrigationServiceTotal + atticServiceTotal + pmPhotoTotal + irrigationBundlePrice;
-  const materialsTax = materialSubtotal * taxRate;
-  const addOn = materialSubtotal + serviceSubtotal + materialsTax;
-  const total = basePrice + addOn;
-  document.getElementById("basePrice").textContent = formatCurrency(basePrice);
-  document.getElementById("materialsSubtotal").textContent = formatCurrency(materialSubtotal);
-  document.getElementById("serviceSubtotal").textContent = formatCurrency(serviceSubtotal);
-  document.getElementById("materialsTax").textContent = formatCurrency(materialsTax);
-  document.getElementById("addOnPrice").textContent = formatCurrency(addOn);
-  document.getElementById("totalPrice").textContent = formatCurrency(total);
-}
-function generateQuote() {
-  const customerName = document.getElementById("customerName").value || "Customer";
-  const customerPhone = document.getElementById("customerPhone").value || "";
-  const customerEmail = document.getElementById("customerEmail").value || "";
-  const customerAddress = document.getElementById("customerAddress").value || "";
-  const total = document.getElementById("totalPrice").textContent;
-  const planLabel = planDisplayNames[selectedPlan] || selectedPlan;
-  let bundleText = "";
-  if (document.getElementById("irrigationBundle")?.checked) {
-    if (selectedPlan === "plan1") bundleText = "\n• Irrigation Bundle Added ($109)";
-    if (selectedPlan === "plan1biannual") bundleText = "\n• Irrigation Bundle Added ($99)";
-    if (selectedPlan === "plan2") bundleText = "\n• Irrigation Bundle Added ($99)";
-    if (selectedPlan === "plan3") bundleText = "\n• Irrigation Bundle Added ($79)";
-  }
-  const text = "Hi " + customerName + ",\n\nThis is Tim with Mobile Onsite Handyman Services.\n\nHere is your service quote:\n\n" + planLabel + bundleText + "\n\nProperty: " + customerAddress + "\nPhone: " + customerPhone + "\n\nTotal: " + total + "\n\nThis includes all selected services, add-ons, and tax.\n\nLet me know if you'd like to schedule — I have availability this week.\n\nThanks,\nTim\nMobile Onsite Handyman\n951-388-4744";
-  document.getElementById("quoteOutput").value = text;
-}
+    const zonePrefixRanges = {
+      4: ["900","901","902","903","904","905","906","907","908","910","911","912","913","914","915","916","918"]
+    };
 
-function generateInvoice() {
-  const customerName = document.getElementById("customerName").value || "Customer";
-  const customerPhone = document.getElementById("customerPhone").value || "";
-  const customerEmail = document.getElementById("customerEmail").value || "";
-  const customerAddress = document.getElementById("customerAddress").value || "";
-  const total = document.getElementById("totalPrice").textContent;
-  const planLabel = planDisplayNames[selectedPlan] || selectedPlan;
+    const zoneMeta = {
+      1: { name: "Zone 1", label: "Budget / Volume", multiplier: 1.00, cluster: "Riverside Core" },
+      2: { name: "Zone 2", label: "Standard Inland", multiplier: 1.12, cluster: "Riverside / San Bernardino Core" },
+      3: { name: "Zone 3", label: "Premium Inland", multiplier: 1.28, cluster: "South IE / Premium Inland" },
+      4: { name: "Zone 4", label: "Coastal / High-End", multiplier: 1.45, cluster: "Coastal / Premium" }
+    };
 
-  let bundleText = "";
-  if (document.getElementById("irrigationBundle")?.checked) {
-    if (selectedPlan === "plan1") bundleText = "\nIrrigation Bundle Added ($109)";
-    if (selectedPlan === "plan1biannual") bundleText = "\nIrrigation Bundle Added ($99)";
-    if (selectedPlan === "plan2") bundleText = "\nIrrigation Bundle Added ($99)";
-    if (selectedPlan === "plan3") bundleText = "\nIrrigation Bundle Added ($79)";
-  }
+    const addOnPricing = {
+      sewer: 225,
+      termite: 125,
+      mold: 250,
+      thermal: 95,
+      pool: 175,
+      rush: 150
+    };
 
-  const text =
-    "INVOICE\n\n" +
-    "Mobile Onsite Handyman Services LLC\n" +
-    "Phone: 951-388-4744\n\n" +
-    "Bill To: " + customerName + "\n" +
-    "Phone: " + customerPhone + "\n" +
-    "Email: " + customerEmail + "\n" +
-    "Property: " + customerAddress + "\n\n" +
-    "Work Completed:\n" +
-    "Service: Annual Home Maintenance\n" +
-    "Plan: " + planLabel + bundleText + "\n\n" +
-    "Amount Due: " + total + "\n\n" +
-    "Accepted Payment Methods:\n" +
-    "- Cash\n" +
-    "- Zelle\n" +
-    "- Venmo\n" +
-    "- Cash App\n" +
-    "- Credit / Debit Card\n\n" +
-    "Payment Status: Due upon completion\n\n" +
-    "Thank you,\n" +
-    "Tim\n" +
-    "Mobile Onsite Handyman Services LLC";
+    function zipToZone(zip) {
+      const digits = (zip || "").replace(/\D/g, "");
+      if (digits.length < 5) return null;
 
-  document.getElementById("quoteOutput").value = text;
-}
+      for (const zone in zoneExactZips) {
+        if (zoneExactZips[zone].includes(digits)) return { zoneNumber: zone, ...zoneMeta[zone] };
+      }
 
-function downloadInvoice() {
-  const text = document.getElementById("quoteOutput").value;
+      for (const zone in zonePrefixRanges) {
+        for (const prefix of zonePrefixRanges[zone]) {
+          if (digits.startsWith(prefix)) return { zoneNumber: zone, ...zoneMeta[zone] };
+        }
+      }
 
-  if (!text) {
-    document.getElementById("copyStatus").textContent = "Generate the invoice first.";
-    return;
-  }
+      return { zoneNumber: "1", ...zoneMeta[1] };
+    }
 
-  const customerName = document.getElementById("customerName").value || "customer";
-  const safeName = customerName.replace(/[^a-z0-9]/gi, "_").toLowerCase();
-  const date = new Date().toISOString().slice(0, 10);
+    function formatCurrency(value) {
+      return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value || 0);
+    }
 
-  const fileName = "maintenance_invoice_" + safeName + "_" + date + ".txt";
-  const blob = new Blob([text], { type: "text/plain" });
-  const url = URL.createObjectURL(blob);
+    function getBaseInspectionPrice(propertyType, sqft) {
+      const sf = Number(sqft || 0);
 
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = fileName;
-  link.click();
+      if (propertyType === "condo") {
+        if (sf < 1000) return 350;
+        if (sf < 1500) return 395;
+        if (sf < 2000) return 450;
+        return 495;
+      }
 
-  URL.revokeObjectURL(url);
+      if (sf < 1000) return 425;
+      if (sf < 1500) return 475;
+      if (sf < 2000) return 550;
+      if (sf < 2500) return 625;
+      if (sf < 2800) return 695;
+      if (sf < 3500) return 825;
+      if (sf < 4500) return 975;
+      return 1150;
+    }
 
-  document.getElementById("copyStatus").textContent = "Invoice downloaded.";
-}
+    function getDurationLabel(propertyType, sqft, stories) {
+      const sf = Number(sqft || 0);
+      const storyCount = Number(stories || 1);
 
-async function saveInvoice() {
-  const data = {
-    invoiceNumber: "MAINT-INV-" + Date.now(),
-    sourceApp: "Annual Maintenance Quote App",
-    customerName: document.getElementById("customerName").value || "",
-    phone: document.getElementById("customerPhone").value || "",
-    email: document.getElementById("customerEmail").value || "",
-    address: document.getElementById("customerAddress").value || "",
-    service: "Annual Maintenance",
-    type: planDisplayNames[selectedPlan] || selectedPlan,
-    total: document.getElementById("totalPrice").textContent || "",
-  paymentStatus: document.getElementById("paymentStatus").value || "Due upon completion",
-  paymentMethod: document.getElementById("paymentMethod").value || "",
-    
-  notes: planDisplayNames[selectedPlan] || selectedPlan 
-  };
+      if (propertyType === "condo") {
+        return { label: "3 to 3.5 hour inspection window", type: "condo_3hr" };
+      }
 
-  try {
- await fetch("https://script.google.com/macros/s/AKfycbzpAvHREQwQRzolPg2KGiAIN86c5x7T6we86_NmKt7bMfIU90X4Wd3mXux19R05w4EtnQ/exec", {
-  method: "POST",
-  mode: "no-cors",
-  body: JSON.stringify(data),
-  headers: {
-    "Content-Type": "text/plain"
-  }
-});
+      if (sf >= 2800 && storyCount >= 2) {
+        return { label: "6 hour inspection window", type: "large_home_6hr" };
+      }
 
-document.getElementById("copyStatus").textContent =
-  "Sent to database. Check Google Sheets.";
-  } catch (error) {
-    console.error(error);
-    document.getElementById("copyStatus").textContent = "Connection error.";
-  }
-}
+      if (sf < 1500) {
+        return { label: "3 to 3.5 hour inspection window", type: "small_home_3hr" };
+      }
+
+      return { label: "4.5 hour inspection window", type: "standard_home_4_5hr" };
+    }
+
+    function getSelectedAddOnsTotal() {
+      let total = 0;
+      document.querySelectorAll('.addon-check').forEach(cb => {
+        if (cb.checked) total += addOnPricing[cb.dataset.addon] || 0;
+      });
+      return total;
+    }
+
+    function updateQuote() {
+      const zip = document.getElementById('zip').value.trim();
+      const zone = zipToZone(zip);
+      const propertyType = document.getElementById('propertyType').value;
+      const sqft = Number(document.getElementById('sqft').value || 0);
+      const stories = Number(document.getElementById('stories').value || 1);
+
+      const propertyCard = document.getElementById('propertyCard');
+      const addonsCard = document.getElementById('addonsCard');
+      const summaryCard = document.getElementById('summaryCard');
+      const zoneBox = document.getElementById('zoneBox');
+
+      if (!zip || !zone) {
+        propertyCard.classList.add('hidden');
+        addonsCard.classList.add('hidden');
+        summaryCard.classList.add('hidden');
+        zoneBox.textContent = 'Enter ZIP code and property info for price and scheduling.';
+        return;
+      }
+
+      propertyCard.classList.remove('hidden');
+      addonsCard.classList.remove('hidden');
+      summaryCard.classList.remove('hidden');
+      zoneBox.textContent = 'Service area confirmed. Enter property details below for price and scheduling.';
+
+      const timing = getDurationLabel(propertyType, sqft, stories);
+      document.getElementById('timingNote').textContent = sqft ? `Estimated field time: ${timing.label}. First inspection of the day should set the area cluster; second inspection should stay nearby.` : 'Enter square footage to see estimated inspection time.';
+
+      const rawBase = sqft ? getBaseInspectionPrice(propertyType, sqft) : 0;
+      const base = rawBase ? Math.round(rawBase * zone.multiplier) : 0;
+      const addOns = getSelectedAddOnsTotal();
+      const total = base + addOns;
+
+      document.getElementById('basePrice').textContent = formatCurrency(base);
+      document.getElementById('addOnsPrice').textContent = formatCurrency(addOns);
+      document.getElementById('totalPrice').textContent = formatCurrency(total);
+
+      document.getElementById('summaryDetails').innerHTML = `
+        Property Type: ${propertyType === 'condo' ? 'Condo / Townhome' : 'Single Family Home'}<br>
+        Square Feet: ${sqft || 'Not entered'}<br>
+        Stories: ${stories}<br>
+        Booking Type: ${timing.label}
+      `;
+
+      document.getElementById('bookingLogicNote').innerHTML = `
+        <strong>Scheduling note:</strong> Inspection time is based on property size, type, stories, location, and selected add-ons.<br>
+        <strong>Availability:</strong> Final appointment time will be confirmed during booking.
+      `;
+    }
+
+    function generateQuote() {
+      const customerName = document.getElementById('customerName').value || 'Customer';
+      const customerPhone = document.getElementById('customerPhone').value || '';
+      const customerEmail = document.getElementById('customerEmail').value || '';
+      const customerAddress = document.getElementById('customerAddress').value || '';
+      const zip = document.getElementById('zip').value || '';
+      const zone = zipToZone(zip);
+      const propertyType = document.getElementById('propertyType').value;
+      const sqft = Number(document.getElementById('sqft').value || 0);
+      const stories = Number(document.getElementById('stories').value || 1);
+      const timing = getDurationLabel(propertyType, sqft, stories);
+      const total = document.getElementById('totalPrice').textContent;
+
+      const chosenAddOns = [];
+      document.querySelectorAll('.addon-check').forEach(cb => {
+        if (cb.checked) chosenAddOns.push(cb.parentElement.textContent.trim());
+      });
+
+      const text =
+        `Hi ${customerName},\n\n` +
+        `This is Tim with Impact Property Inspections.\n\n` +
+        `Here is your inspection quote:\n\n` +
+        `Property: ${customerAddress}\n` +
+        `ZIP Code: ${zip}\n` +
+        `Phone: ${customerPhone}\n` +
+        `Email: ${customerEmail}\n` +
+        `Property Type: ${propertyType === 'condo' ? 'Condo / Townhome' : 'Single Family Home'}\n` +
+        `Square Feet: ${sqft || 'TBD'}\n` +
+        `Stories: ${stories}\n` +
+        `Service Area: ${zone ? zone.cluster : 'TBD'}\n` +
+        `Inspection Window: ${timing.label}\n` +
+        `${chosenAddOns.length ? `Add-Ons: ${chosenAddOns.join(', ')}\n` : ''}\n` +
+        `Estimated Total: ${total}\n\n` +
+        `A deposit is required to reserve your appointment and will be applied toward your inspection total.\n\n` +
+        `Thanks,\nTim\nImpact Property Inspections`;
+
+      document.getElementById('quoteOutput').value = text;
+    }
 
 
-function openGmailQuote() {
-  const customerEmail = document.getElementById("customerEmail").value || "";
-  const quoteText = document.getElementById("quoteOutput").value || "";
+    function openGmailQuote() {
+      const customerEmail = document.getElementById('customerEmail').value || '';
+      const quoteText = document.getElementById('quoteOutput').value || '';
 
-  if (!quoteText) {
-    document.getElementById("copyStatus").textContent = "Generate the quote first.";
-    return;
-  }
+      if (!quoteText) {
+        document.getElementById('copyStatus').textContent = 'Generate the quote first.';
+        return;
+      }
 
-  if (!customerEmail) {
-    document.getElementById("copyStatus").textContent = "Enter customer email first.";
-    return;
-  }
+      if (!customerEmail) {
+        document.getElementById('copyStatus').textContent = 'Enter customer email first.';
+        return;
+      }
 
-  const subject = "Estimate from Mobile Onsite Handyman Services";
-  const gmailLink =
-    "https://mail.google.com/mail/?view=cm&fs=1" +
-    "&to=" + encodeURIComponent(customerEmail) +
-    "&su=" + encodeURIComponent(subject) +
-    "&body=" + encodeURIComponent(quoteText);
+      const subject = 'Inspection Estimate from Impact Property Inspections';
+      const gmailLink =
+        'https://mail.google.com/mail/?view=cm&fs=1' +
+        '&to=' + encodeURIComponent(customerEmail) +
+        '&su=' + encodeURIComponent(subject) +
+        '&body=' + encodeURIComponent(quoteText);
 
-  window.open(gmailLink, "_blank");
-}
+      window.open(gmailLink, '_blank');
+    }
 
-function openEmailQuote() {
-  const customerEmail = document.getElementById("customerEmail").value || "";
-  const quoteText = document.getElementById("quoteOutput").value || "";
+    function openEmailQuote() {
+      const customerEmail = document.getElementById('customerEmail').value || '';
+      const quoteText = document.getElementById('quoteOutput').value || '';
 
-  if (!quoteText) {
-    document.getElementById("copyStatus").textContent = "Generate the quote first.";
-    return;
-  }
+      if (!quoteText) {
+        document.getElementById('copyStatus').textContent = 'Generate the quote first.';
+        return;
+      }
 
-  if (!customerEmail) {
-    document.getElementById("copyStatus").textContent = "Enter customer email first.";
-    return;
-  }
+      if (!customerEmail) {
+        document.getElementById('copyStatus').textContent = 'Enter customer email first.';
+        return;
+      }
 
-  const subject = "Estimate from Mobile Onsite Handyman Services";
-  const mailtoLink =
-    "mailto:" + encodeURIComponent(customerEmail) +
-    "?subject=" + encodeURIComponent(subject) +
-    "&body=" + encodeURIComponent(quoteText);
+      const subject = 'Inspection Estimate from Impact Property Inspections';
+      const mailtoLink =
+        'mailto:' + encodeURIComponent(customerEmail) +
+        '?subject=' + encodeURIComponent(subject) +
+        '&body=' + encodeURIComponent(quoteText);
 
-  window.location.href = mailtoLink;
-}
+      window.location.href = mailtoLink;
+    }
 
-function sendTextMessage() { const phone = document.getElementById("customerPhone").value || ""; const quoteText = document.getElementById("quoteOutput").value || ""; if (!quoteText) { alert("Generate the quote first."); return; } if (!phone) { alert("Enter customer phone number."); return; } const cleanedPhone = phone.replace(/\D/g, ""); const smsLink = "sms:" + cleanedPhone + "?body=" + encodeURIComponent(quoteText); window.location.href = smsLink; }
-function copyQuote() { const text = document.getElementById("quoteOutput").value; const status = document.getElementById("copyStatus"); if (!text) { status.textContent = "Generate the quote first."; return; } try { navigator.clipboard.writeText(text); status.textContent = "✓ Quote copied"; } catch (err) { status.textContent = "Copy not supported. Copy manually from the quote box."; } }
-area.addEventListener("input", updateQuote);
-document.getElementById("filters").addEventListener("input", updateQuote);
-document.getElementById("filterType").addEventListener("change", updateQuote);
-document.getElementById("detectorType").addEventListener("change", updateQuote);
-document.getElementById("detectorQty").addEventListener("input", updateQuote);
-document.getElementById("extraDetectorQty").addEventListener("input", updateQuote);
-document.getElementById("batteryServiceQty").addEventListener("input", updateQuote);
-document.getElementById("detectorLaborQty").addEventListener("input", updateQuote);
-document.getElementById("extraZones").addEventListener("input", updateQuote);
-document.getElementById("irrigationBundle").addEventListener("change", updateQuote);
-document.getElementById("pmPhotos").addEventListener("change", updateQuote);
-document.getElementById("homeSqft").addEventListener("input", updateQuote);
-atticBtn.addEventListener("click", function() { attic = !attic; atticBtn.textContent = attic ? "Attic / Closet Access Added (+$35)" : "No Attic Access Charge"; atticBtn.style.background = attic ? "#059669" : "#e2e8f0"; atticBtn.style.color = attic ? "white" : "#0f172a"; updateQuote(); });
-document.querySelectorAll(".plan-btn").forEach(btn => { btn.addEventListener("click", function() { selectedPlan = btn.dataset.plan; updateQuote(); }); });
-updateQuote();
-</script>
+    function openTextMessage() {
+      const customerPhone = document.getElementById('customerPhone').value || '';
+      const quoteText = document.getElementById('quoteOutput').value || '';
+      if (!quoteText || !customerPhone) return;
+      const cleanedPhone = customerPhone.replace(/\D/g, '');
+      window.location.href = 'sms:' + cleanedPhone + '?body=' + encodeURIComponent(quoteText);
+    }
+
+    function copyQuote() {
+      const text = document.getElementById('quoteOutput').value;
+      if (!text) {
+        document.getElementById('copyStatus').textContent = 'Generate the quote first.';
+        return;
+      }
+      navigator.clipboard.writeText(text);
+      document.getElementById('copyStatus').textContent = 'Quote copied';
+    }
+
+    document.getElementById('zip').addEventListener('input', updateQuote);
+    document.getElementById('propertyType').addEventListener('change', updateQuote);
+    document.getElementById('stories').addEventListener('change', updateQuote);
+    document.getElementById('sqft').addEventListener('input', updateQuote);
+    document.querySelectorAll('.addon-check').forEach(cb => cb.addEventListener('change', updateQuote));
+
+    updateQuote();
+  </script>
 </body>
 </html>
