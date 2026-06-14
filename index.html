@@ -175,7 +175,8 @@
 </select>
 
 <textarea id="quoteOutput" style="height:140px;"></textarea>
-      <button onclick="sendTextMessage()" style="margin-top:15px; padding:14px; background:#0f172a; color:white; border:none; border-radius:12px;">Open Text Message</button>
+      <button onclick="openGmailQuote()" style="margin-top:15px; padding:14px; background:#0f172a; color:white; border:none; border-radius:12px;">Email with Gmail</button>
+      <button onclick="openEmailQuote()" style="margin-top:10px; padding:14px; background:#047857; color:white; border:none; border-radius:12px;">Email App</button>
       <button onclick="copyQuote()" style="margin-top:10px; padding:12px; background:#64748b; color:white; border:none; border-radius:12px;">Copy Quote</button>
       <a href="https://calendly.com/mobileonsitehandyman/handyman-service-appointment" target="_blank" style="display:block; width:100%; box-sizing:border-box; margin-top:10px; padding:14px; background:#2563eb; color:white; border-radius:12px; text-decoration:none; text-align:center;">Book Appointment</a>
       <button onclick="generateInvoice()" style="margin-top:10px; padding:14px; background:#047857; color:white; border:none; border-radius:12px;">Generate Invoice</button>
@@ -406,6 +407,54 @@ document.getElementById("copyStatus").textContent =
     console.error(error);
     document.getElementById("copyStatus").textContent = "Connection error.";
   }
+}
+
+
+function openGmailQuote() {
+  const customerEmail = document.getElementById("customerEmail").value || "";
+  const quoteText = document.getElementById("quoteOutput").value || "";
+
+  if (!quoteText) {
+    document.getElementById("copyStatus").textContent = "Generate the quote first.";
+    return;
+  }
+
+  if (!customerEmail) {
+    document.getElementById("copyStatus").textContent = "Enter customer email first.";
+    return;
+  }
+
+  const subject = "Estimate from Mobile Onsite Handyman Services";
+  const gmailLink =
+    "https://mail.google.com/mail/?view=cm&fs=1" +
+    "&to=" + encodeURIComponent(customerEmail) +
+    "&su=" + encodeURIComponent(subject) +
+    "&body=" + encodeURIComponent(quoteText);
+
+  window.open(gmailLink, "_blank");
+}
+
+function openEmailQuote() {
+  const customerEmail = document.getElementById("customerEmail").value || "";
+  const quoteText = document.getElementById("quoteOutput").value || "";
+
+  if (!quoteText) {
+    document.getElementById("copyStatus").textContent = "Generate the quote first.";
+    return;
+  }
+
+  if (!customerEmail) {
+    document.getElementById("copyStatus").textContent = "Enter customer email first.";
+    return;
+  }
+
+  const subject = "Estimate from Mobile Onsite Handyman Services";
+  const mailtoLink =
+    "mailto:" + encodeURIComponent(customerEmail) +
+    "?subject=" + encodeURIComponent(subject) +
+    "&body=" + encodeURIComponent(quoteText);
+
+  window.location.href = mailtoLink;
 }
 
 function sendTextMessage() { const phone = document.getElementById("customerPhone").value || ""; const quoteText = document.getElementById("quoteOutput").value || ""; if (!quoteText) { alert("Generate the quote first."); return; } if (!phone) { alert("Enter customer phone number."); return; } const cleanedPhone = phone.replace(/\D/g, ""); const smsLink = "sms:" + cleanedPhone + "?body=" + encodeURIComponent(quoteText); window.location.href = smsLink; }
