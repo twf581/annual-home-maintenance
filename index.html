@@ -376,7 +376,7 @@
         (chosenAddOns.length ? ' - Add-ons: ' + chosenAddOns.join(', ') : '');
 
       const data = {
-        invoiceNumber: 'INSP-QUOTE-' + Date.now(),
+       invoiceNumber: 'INSP-QUOTE-' + Date.now(),
         sourceApp: 'Inspection Quote App',
         customerName: customerName,
         phone: customerPhone,
@@ -385,7 +385,7 @@
         service: 'Property Inspection',
         type: typeText,
         total: total,
-        paymentStatus: 'Quote Sent',
+       paymentStatus: 'Due upon completion',
         paymentMethod: '',
         notes: typeText
       };
