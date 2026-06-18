@@ -52,6 +52,21 @@
       <input id="customerEmail" type="email" placeholder="Enter customer email">
       <label for="customerAddress">Property Address</label>
       <input id="customerAddress" type="text" placeholder="Enter property address">
+
+      <div style="margin-top:15px; padding:12px; border:1px solid #e2e8f0; border-radius:12px;">
+        <strong>Maintenance Scheduling</strong>
+
+        <label for="serviceDate">Service Date</label>
+        <input id="serviceDate" type="date" onchange="calculateNextServiceDate()">
+
+        <label for="nextServiceDate">Next Service Due</label>
+        <input id="nextServiceDate" type="date" readonly>
+
+        <p class="note">
+          Annual plans calculate the next service one year from the service date.
+          The bi-annual plan calculates the next service six months from the service date.
+        </p>
+      </div>
     </div>
 
     <div class="card">
@@ -155,6 +170,7 @@
       </div>
 
       <button onclick="generateQuote()" style="margin-top:15px; padding:14px; background:#047857; color:white; border:none; border-radius:12px;">Generate Quote Text</button>
+      <button onclick="generateCustomerSummary()" style="margin-top:10px; padding:14px; background:#2563eb; color:white; border:none; border-radius:12px;">Generate Customer Summary</button>
 
 <label>Payment Status</label>
 <select id="paymentStatus">
@@ -181,6 +197,7 @@
       <a href="https://calendly.com/mobileonsitehandyman/handyman-service-appointment" target="_blank" style="display:block; width:100%; box-sizing:border-box; margin-top:10px; padding:14px; background:#2563eb; color:white; border-radius:12px; text-decoration:none; text-align:center;">Book Appointment</a>
       <button onclick="generateInvoice()" style="margin-top:10px; padding:14px; background:#047857; color:white; border:none; border-radius:12px;">Generate Invoice</button>
       <button onclick="downloadInvoice()" style="margin-top:10px; padding:14px; background:#64748b; color:white; border:none; border-radius:12px;">Download Invoice</button>
+      <button onclick="downloadCustomerSummary()" style="margin-top:10px; padding:14px; background:#2563eb; color:white; border:none; border-radius:12px;">Download Customer Summary</button>
       <button onclick="saveInvoice()" style="margin-top:10px; padding:14px; background:#0f172a; color:white; border:none; border-radius:12px;">Save Invoice to Database</button>
       <div id="copyStatus" style="margin-top:8px; font-size:14px; color:#059669; font-weight:600;"></div>
     </div>
@@ -233,7 +250,43 @@ function renderPlans() {
     btn.innerHTML = "<strong>" + planTitles[key] + "</strong><br><span>" + formatCurrency(getBasePlanPrice(key, currentZone.adjustment)) + "</span>" + "<br><br><button type='button' class='detail-btn' onclick=\"event.stopPropagation(); toggleDetails('" + key + "');\">View Details</button>" + "<div id='details-" + key + "' class='details'>" + planDetails[key] + "</div>";
   });
 }
+
+function calculateNextServiceDate() {
+  const serviceDateField = document.getElementById("serviceDate");
+  const nextServiceDateField = document.getElementById("nextServiceDate");
+
+  if (!serviceDateField || !nextServiceDateField) return;
+
+  const serviceDate = serviceDateField.value;
+
+  if (!serviceDate) {
+    nextServiceDateField.value = "";
+    return;
+  }
+
+  const nextDate = new Date(serviceDate + "T12:00:00");
+
+  if (selectedPlan === "plan1biannual") {
+    nextDate.setMonth(nextDate.getMonth() + 6);
+  } else {
+    nextDate.setFullYear(nextDate.getFullYear() + 1);
+  }
+
+  nextServiceDateField.value = nextDate.toISOString().slice(0, 10);
+}
+
+function getServiceDateText() {
+  const serviceDate = document.getElementById("serviceDate") ? document.getElementById("serviceDate").value : "";
+  return serviceDate || "To be scheduled";
+}
+
+function getNextServiceDateText() {
+  const nextServiceDate = document.getElementById("nextServiceDate") ? document.getElementById("nextServiceDate").value : "";
+  return nextServiceDate || "To be scheduled";
+}
+
 function updateQuote() {
+  calculateNextServiceDate();
   const detected = zipToZone(area.value);
   currentZone = detected;
 
@@ -295,6 +348,8 @@ function generateQuote() {
   const customerAddress = document.getElementById("customerAddress").value || "";
   const total = document.getElementById("totalPrice").textContent;
   const planLabel = planDisplayNames[selectedPlan] || selectedPlan;
+  const serviceDate = getServiceDateText();
+  const nextServiceDate = getNextServiceDateText();
   let bundleText = "";
   if (document.getElementById("irrigationBundle")?.checked) {
     if (selectedPlan === "plan1") bundleText = "\n• Irrigation Bundle Added ($109)";
@@ -302,7 +357,51 @@ function generateQuote() {
     if (selectedPlan === "plan2") bundleText = "\n• Irrigation Bundle Added ($99)";
     if (selectedPlan === "plan3") bundleText = "\n• Irrigation Bundle Added ($79)";
   }
-  const text = "Hi " + customerName + ",\n\nThis is Tim with Mobile Onsite Handyman Services.\n\nHere is your service quote:\n\n" + planLabel + bundleText + "\n\nProperty: " + customerAddress + "\nPhone: " + customerPhone + "\n\nTotal: " + total + "\n\nThis includes all selected services, add-ons, and tax.\n\nLet me know if you'd like to schedule — I have availability this week.\n\nThanks,\nTim\nMobile Onsite Handyman\n951-388-4744";
+  const text = "Hi " + customerName + ",\n\nThis is Tim with Mobile Onsite Handyman Services.\n\nHere is your service quote:\n\n" + planLabel + bundleText + "\n\nProperty: " + customerAddress + "\nPhone: " + customerPhone + "\nService Date: " + serviceDate + "\nNext Service Due: " + nextServiceDate + "\n\nTotal: " + total + "\n\nThis includes all selected services, add-ons, and tax.\n\nLet me know if you'd like to schedule — I have availability this week.\n\nThanks,\nTim\nMobile Onsite Handyman\n951-388-4744";
+  document.getElementById("quoteOutput").value = text;
+}
+
+
+function generateCustomerSummary() {
+  updateQuote();
+
+  const customerName = document.getElementById("customerName").value || "Customer";
+  const customerPhone = document.getElementById("customerPhone").value || "";
+  const customerEmail = document.getElementById("customerEmail").value || "";
+  const customerAddress = document.getElementById("customerAddress").value || "";
+  const total = document.getElementById("totalPrice").textContent;
+  const planLabel = planDisplayNames[selectedPlan] || selectedPlan;
+  const serviceDate = getServiceDateText();
+  const nextServiceDate = getNextServiceDateText();
+
+  let bundleText = "";
+  if (document.getElementById("irrigationBundle")?.checked) {
+    if (selectedPlan === "plan1") bundleText = "\nIrrigation Bundle Added ($109)";
+    if (selectedPlan === "plan1biannual") bundleText = "\nIrrigation Bundle Added ($99)";
+    if (selectedPlan === "plan2") bundleText = "\nIrrigation Bundle Added ($99)";
+    if (selectedPlan === "plan3") bundleText = "\nIrrigation Bundle Added ($79)";
+  }
+
+  const text =
+    "CUSTOMER SERVICE SUMMARY\n\n" +
+    "Mobile Onsite Handyman Services LLC\n" +
+    "Phone: 951-388-4744\n\n" +
+    "Customer: " + customerName + "\n" +
+    "Phone: " + customerPhone + "\n" +
+    "Email: " + customerEmail + "\n" +
+    "Property: " + customerAddress + "\n\n" +
+    "Selected Maintenance Plan:\n" +
+    planLabel + bundleText + "\n\n" +
+    "Service Date: " + serviceDate + "\n" +
+    "Recommended Next Service: " + nextServiceDate + "\n\n" +
+    "Estimated Total: " + total + "\n\n" +
+    "Service Notes:\n" +
+    "- All services are non-invasive visual and functional maintenance.\n" +
+    "- Service is limited to accessible areas and safe working conditions.\n" +
+    "- Additional detectors, filters, materials, repairs, or inaccessible items may require added cost.\n" +
+    "- Tax applies to materials only.\n\n" +
+    "Thank you for choosing Mobile Onsite Handyman Services LLC.";
+
   document.getElementById("quoteOutput").value = text;
 }
 
@@ -313,6 +412,8 @@ function generateInvoice() {
   const customerAddress = document.getElementById("customerAddress").value || "";
   const total = document.getElementById("totalPrice").textContent;
   const planLabel = planDisplayNames[selectedPlan] || selectedPlan;
+  const serviceDate = getServiceDateText();
+  const nextServiceDate = getNextServiceDateText();
 
   let bundleText = "";
   if (document.getElementById("irrigationBundle")?.checked) {
@@ -329,7 +430,9 @@ function generateInvoice() {
     "Bill To: " + customerName + "\n" +
     "Phone: " + customerPhone + "\n" +
     "Email: " + customerEmail + "\n" +
-    "Property: " + customerAddress + "\n\n" +
+    "Property: " + customerAddress + "\n" +
+    "Service Date: " + serviceDate + "\n" +
+    "Next Service Due: " + nextServiceDate + "\n\n" +
     "Work Completed:\n" +
     "Service: Annual Home Maintenance\n" +
     "Plan: " + planLabel + bundleText + "\n\n" +
@@ -374,6 +477,33 @@ function downloadInvoice() {
   document.getElementById("copyStatus").textContent = "Invoice downloaded.";
 }
 
+
+function downloadCustomerSummary() {
+  let text = document.getElementById("quoteOutput").value;
+
+  if (!text || !text.includes("CUSTOMER SERVICE SUMMARY")) {
+    generateCustomerSummary();
+    text = document.getElementById("quoteOutput").value;
+  }
+
+  const customerName = document.getElementById("customerName").value || "customer";
+  const safeName = customerName.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+  const date = new Date().toISOString().slice(0, 10);
+
+  const fileName = "maintenance_summary_" + safeName + "_" + date + ".txt";
+  const blob = new Blob([text], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.click();
+
+  URL.revokeObjectURL(url);
+
+  document.getElementById("copyStatus").textContent = "Customer summary downloaded.";
+}
+
 async function saveInvoice() {
   const data = {
     invoiceNumber: "MAINT-INV-" + Date.now(),
@@ -384,11 +514,13 @@ async function saveInvoice() {
     address: document.getElementById("customerAddress").value || "",
     service: "Annual Maintenance",
     type: planDisplayNames[selectedPlan] || selectedPlan,
+    serviceDate: getServiceDateText(),
+    nextServiceDate: getNextServiceDateText(),
     total: document.getElementById("totalPrice").textContent || "",
   paymentStatus: document.getElementById("paymentStatus").value || "Due upon completion",
   paymentMethod: document.getElementById("paymentMethod").value || "",
     
-  notes: planDisplayNames[selectedPlan] || selectedPlan 
+  notes: (planDisplayNames[selectedPlan] || selectedPlan) + " | Service Date: " + getServiceDateText() + " | Next Service Due: " + getNextServiceDateText()
   };
 
   try {
@@ -472,7 +604,16 @@ document.getElementById("irrigationBundle").addEventListener("change", updateQuo
 document.getElementById("pmPhotos").addEventListener("change", updateQuote);
 document.getElementById("homeSqft").addEventListener("input", updateQuote);
 atticBtn.addEventListener("click", function() { attic = !attic; atticBtn.textContent = attic ? "Attic / Closet Access Added (+$35)" : "No Attic Access Charge"; atticBtn.style.background = attic ? "#059669" : "#e2e8f0"; atticBtn.style.color = attic ? "white" : "#0f172a"; updateQuote(); });
-document.querySelectorAll(".plan-btn").forEach(btn => { btn.addEventListener("click", function() { selectedPlan = btn.dataset.plan; updateQuote(); }); });
+document.querySelectorAll(".plan-btn").forEach(btn => { btn.addEventListener("click", function() { selectedPlan = btn.dataset.plan; calculateNextServiceDate(); updateQuote(); }); });
+
+function setDefaultServiceDate() {
+  const serviceDateField = document.getElementById("serviceDate");
+  if (serviceDateField && !serviceDateField.value) {
+    serviceDateField.value = new Date().toISOString().slice(0, 10);
+  }
+  calculateNextServiceDate();
+}
+setDefaultServiceDate();
 updateQuote();
 </script>
 </body>
