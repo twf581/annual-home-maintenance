@@ -157,11 +157,6 @@
       <div style="margin-top:15px; padding:12px; border:1px solid #e2e8f0; border-radius:12px;">
         <strong>Repairs Identified During Maintenance Visit</strong>
 
-        <label><input id="rqHvacFilter" type="checkbox" class="inline-checkbox"> HVAC filter replacement</label>
-        <label><input id="rqSmokeBattery" type="checkbox" class="inline-checkbox"> Smoke detector battery replacement</label>
-        <label><input id="rqSmokeReplace" type="checkbox" class="inline-checkbox"> Smoke detector replacement</label>
-        <label><input id="rqCoBattery" type="checkbox" class="inline-checkbox"> CO detector battery replacement</label>
-        <label><input id="rqCoReplace" type="checkbox" class="inline-checkbox"> CO detector replacement</label>
         <label><input id="rqSprinkler" type="checkbox" class="inline-checkbox"> Sprinkler / irrigation repair</label>
         <label><input id="rqGate" type="checkbox" class="inline-checkbox"> Gate repair or adjustment</label>
         <label><input id="rqFence" type="checkbox" class="inline-checkbox"> Fence repair or fence post replacement</label>
@@ -171,7 +166,7 @@
         <label><input id="rqOther" type="checkbox" class="inline-checkbox"> Other repair item</label>
 
         <label for="repairQuoteNotes">Repair Notes</label>
-        <textarea id="repairQuoteNotes" rows="6" placeholder="Example: Broken sprinkler head at front yard zone 2. Gate dragging on latch side. Smoke detector chirping in hallway."></textarea>
+        <textarea id="repairQuoteNotes" rows="6" placeholder="Example: Broken sprinkler head at front yard zone 2. Gate dragging on latch side. Fence post loose at rear side yard."></textarea>
 
         <button onclick="requestRepairQuote()" style="margin-top:10px; padding:14px; background:#b91c1c; color:white; border:none; border-radius:12px;">Request Repair Quote</button>
         <button onclick="clearRepairQuoteRequest()" style="margin-top:10px; padding:12px; background:#64748b; color:white; border:none; border-radius:12px;">Clear Repair Request</button>
@@ -584,11 +579,6 @@ document.getElementById("copyStatus").textContent =
 function getSelectedRepairQuoteItems() {
   const items = [];
   const repairMap = [
-    ["rqHvacFilter", "HVAC filter replacement"],
-    ["rqSmokeBattery", "Smoke detector battery replacement"],
-    ["rqSmokeReplace", "Smoke detector replacement"],
-    ["rqCoBattery", "CO detector battery replacement"],
-    ["rqCoReplace", "CO detector replacement"],
     ["rqSprinkler", "Sprinkler / irrigation repair"],
     ["rqGate", "Gate repair or adjustment"],
     ["rqFence", "Fence repair or fence post replacement"],
@@ -691,7 +681,6 @@ async function requestRepairQuote() {
 
 function clearRepairQuoteRequest() {
   [
-    "rqHvacFilter", "rqSmokeBattery", "rqSmokeReplace", "rqCoBattery", "rqCoReplace",
     "rqSprinkler", "rqGate", "rqFence", "rqDrywall", "rqPlumbing", "rqElectrical", "rqOther"
   ].forEach(function(id) {
     const el = document.getElementById(id);
