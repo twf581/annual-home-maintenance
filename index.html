@@ -195,10 +195,7 @@
       <button onclick="openEmailQuote()" style="margin-top:10px; padding:14px; background:#047857; color:white; border:none; border-radius:12px;">Email App</button>
       <button onclick="copyQuote()" style="margin-top:10px; padding:12px; background:#64748b; color:white; border:none; border-radius:12px;">Copy Quote</button>
       <a href="https://calendly.com/mobileonsitehandyman/handyman-service-appointment" target="_blank" style="display:block; width:100%; box-sizing:border-box; margin-top:10px; padding:14px; background:#2563eb; color:white; border-radius:12px; text-decoration:none; text-align:center;">Book Appointment</a>
-      <button onclick="generateInvoice()" style="margin-top:10px; padding:14px; background:#047857; color:white; border:none; border-radius:12px;">Generate Invoice</button>
-      <button onclick="downloadInvoice()" style="margin-top:10px; padding:14px; background:#64748b; color:white; border:none; border-radius:12px;">Download Invoice</button>
       <button onclick="downloadCustomerSummary()" style="margin-top:10px; padding:14px; background:#2563eb; color:white; border:none; border-radius:12px;">Download Customer Summary</button>
-      <button onclick="saveInvoice()" style="margin-top:10px; padding:14px; background:#0f172a; color:white; border:none; border-radius:12px;">Save Invoice to Database</button>
       <div id="copyStatus" style="margin-top:8px; font-size:14px; color:#059669; font-weight:600;"></div>
     </div>
   </div>
@@ -504,41 +501,11 @@ function downloadCustomerSummary() {
   document.getElementById("copyStatus").textContent = "Customer summary downloaded.";
 }
 
-async function saveInvoice() {
-  const data = {
-    invoiceNumber: "MAINT-INV-" + Date.now(),
-    sourceApp: "Annual Maintenance Quote App",
-    customerName: document.getElementById("customerName").value || "",
-    phone: document.getElementById("customerPhone").value || "",
-    email: document.getElementById("customerEmail").value || "",
-    address: document.getElementById("customerAddress").value || "",
-    service: "Annual Maintenance",
-    type: planDisplayNames[selectedPlan] || selectedPlan,
-    serviceDate: getServiceDateText(),
-    nextServiceDate: getNextServiceDateText(),
-    total: document.getElementById("totalPrice").textContent || "",
-  paymentStatus: document.getElementById("paymentStatus").value || "Due upon completion",
-  paymentMethod: document.getElementById("paymentMethod").value || "",
-    
-  notes: (planDisplayNames[selectedPlan] || selectedPlan) + " | Service Date: " + getServiceDateText() + " | Next Service Due: " + getNextServiceDateText()
-  };
-
-  try {
- await fetch("https://script.google.com/macros/s/AKfycbzpAvHREQwQRzolPg2KGiAIN86c5x7T6we86_NmKt7bMfIU90X4Wd3mXux19R05w4EtnQ/exec", {
-  method: "POST",
-  mode: "no-cors",
-  body: JSON.stringify(data),
-  headers: {
-    "Content-Type": "text/plain"
-  }
-});
-
-document.getElementById("copyStatus").textContent =
-  "Sent to database. Check Google Sheets.";
-  } catch (error) {
-    console.error(error);
-    document.getElementById("copyStatus").textContent = "Connection error.";
-  }
+async function saveInvoiceDisabledForPublicApp_() {
+  // Removed from public-facing use: this previously let any site visitor
+  // write directly into the internal Annual Maintenance database/sheet.
+  // Kept as a stub only so nothing else throws if referenced.
+  return;
 }
 
 
