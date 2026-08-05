@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Annual Maintenance App - Repair Quote Request</title>
+  <title>Mobile Onsite Handyman Services LLC - Maintenance Quote Tool</title>
   <style>
     body { font-family: Arial, sans-serif; background:#f8fafc; margin:0; padding:16px; color:#0f172a; }
     .wrap { max-width:900px; margin:0 auto; }
@@ -146,37 +146,6 @@
       </div>
     </div>
 
-
-
-    <div class="card" id="repairQuoteRequestCard" style="display:none;">
-      <h2>Repair Quote Request</h2>
-      <p class="note">
-        Use this section when maintenance findings need a separate repair quote outside of the selected maintenance plan.
-      </p>
-
-      <div style="margin-top:15px; padding:12px; border:1px solid #e2e8f0; border-radius:12px;">
-        <strong>Repairs Identified During Maintenance Visit</strong>
-
-        <label><input id="rqSprinkler" type="checkbox" class="inline-checkbox"> Sprinkler / irrigation repair</label>
-        <label><input id="rqGate" type="checkbox" class="inline-checkbox"> Gate repair or adjustment</label>
-        <label><input id="rqFence" type="checkbox" class="inline-checkbox"> Fence repair or fence post replacement</label>
-        <label><input id="rqDrywall" type="checkbox" class="inline-checkbox"> Drywall repair</label>
-        <label><input id="rqPlumbing" type="checkbox" class="inline-checkbox"> Plumbing repair</label>
-        <label><input id="rqElectrical" type="checkbox" class="inline-checkbox"> Electrical repair</label>
-        <label><input id="rqOther" type="checkbox" class="inline-checkbox"> Other repair item</label>
-
-        <label for="repairQuoteNotes">Repair Notes</label>
-        <textarea id="repairQuoteNotes" rows="6" placeholder="Example: Broken sprinkler head at front yard zone 2. Gate dragging on latch side. Fence post loose at rear side yard."></textarea>
-
-        <button onclick="requestRepairQuote()" style="margin-top:10px; padding:14px; background:#b91c1c; color:white; border:none; border-radius:12px;">Request Repair Quote</button>
-        <button onclick="clearRepairQuoteRequest()" style="margin-top:10px; padding:12px; background:#64748b; color:white; border:none; border-radius:12px;">Clear Repair Request</button>
-
-        <div id="repairQuoteRequestStatus" class="small" style="margin-top:10px; font-weight:600; color:#047857;">
-          Repair quote requests are saved as pending requests for the Owner App.
-        </div>
-      </div>
-    </div>
-
     <div class="card" id="summaryCard" style="display:none;">
       <h2>4. Quote Summary</h2>
       <div class="summary-grid">
@@ -196,8 +165,8 @@
         Service pricing may vary based on location, property size, and access conditions.<br><br>
         <strong>Payment Policy:</strong><br>
         Accepted payment methods: Zelle, Venmo, and credit cards.<br>
-        A 3.5% processing fee applies to credit card payments.<br>
-        Checks are accepted for approved property management accounts only.
+        A card processing fee applies to credit card payments (2.9% + $0.30 per transaction).<br>
+        Checks are accepted for approved property management accounts only. Cash, Zelle, Venmo, Cash App, and credit/debit card are accepted for all other accounts.
       </div>
 
       <button onclick="generateQuote()" style="margin-top:15px; padding:14px; background:#047857; color:white; border:none; border-radius:12px;">Generate Quote Text</button>
@@ -272,7 +241,6 @@ const zoneBox = document.getElementById("zoneBox");
 const plansCard = document.getElementById("plansCard");
 const filtersCard = document.getElementById("filtersCard");
 const summaryCard = document.getElementById("summaryCard");
-const repairQuoteRequestCard = document.getElementById("repairQuoteRequestCard");
 const atticBtn = document.getElementById("atticBtn");
 function toggleDetails(plan) { const el = document.getElementById("details-" + plan); if (!el) return; el.style.display = (el.style.display === "none" || el.style.display === "") ? "block" : "none"; }
 function renderPlans() {
@@ -327,8 +295,8 @@ function updateQuote() {
   } else {
     zoneBox.textContent = "Enter property ZIP code to receive accurate pricing in your area";
   }
-  if (!currentZone) { plansCard.style.display = "none"; filtersCard.style.display = "none"; summaryCard.style.display = "none"; if (repairQuoteRequestCard) repairQuoteRequestCard.style.display = "none"; return; }
-  plansCard.style.display = "block"; summaryCard.style.display = "block"; filtersCard.style.display = "block"; if (repairQuoteRequestCard) repairQuoteRequestCard.style.display = "block"; renderPlans();
+  if (!currentZone) { plansCard.style.display = "none"; filtersCard.style.display = "none"; summaryCard.style.display = "none"; return; }
+  plansCard.style.display = "block"; summaryCard.style.display = "block"; filtersCard.style.display = "block"; renderPlans();
   let basePrice = getBasePlanPrice(selectedPlan, currentZone.adjustment);
   const filterCountNum = Number(document.getElementById("filters").value || 0);
   const selectedFilterType = document.getElementById("filterType").value;
@@ -343,12 +311,12 @@ function updateQuote() {
   const extraZones = Number(document.getElementById("extraZones").value || 0);
   const irrigationBundle = document.getElementById("irrigationBundle").checked;
   let irrigationBundlePrice = 0;
-  if (irrigationBundle) {
+  if (irrigationBundle && selectedPlan !== "irrigation") {
     if (selectedPlan === "plan1") irrigationBundlePrice = 109;
-   if (selectedPlan === "plan1biannual") irrigationBundlePrice = 99;
+    if (selectedPlan === "plan1biannual") irrigationBundlePrice = 99;
     if (selectedPlan === "plan2") irrigationBundlePrice = 99;
     if (selectedPlan === "plan3") irrigationBundlePrice = 79;
-    irrigationBundlePrice += currentZone ? currentZone.adjustment : 0;
+    // Zone travel adjustment is applied once per visit (in basePrice above), not per add-on.
   }
   if (detectorType === "hardwired") detectorPrice = 40;
   if (detectorType === "combo") detectorPrice = 70;
@@ -358,7 +326,7 @@ function updateQuote() {
   const pmPhotos = document.getElementById("pmPhotos").checked;
   const homeSqft = Number(document.getElementById("homeSqft").value || 0);
   let pmPhotoTotal = 0;
-  if (pmPhotos) { if (homeSqft <= 2000) pmPhotoTotal = 30; else if (homeSqft <= 3000) pmPhotoTotal = 45; else if (homeSqft <= 4000) pmPhotoTotal = 60; else pmPhotoTotal = 60; pmPhotoTotal += currentZone ? currentZone.adjustment : 0; }
+  if (pmPhotos) { if (homeSqft <= 2000) pmPhotoTotal = 30; else if (homeSqft <= 3000) pmPhotoTotal = 45; else if (homeSqft <= 4000) pmPhotoTotal = 60; else pmPhotoTotal = 60; }
   const irrigationServiceTotal = extraZones * 38;
   const atticServiceTotal = attic ? 35 : 0;
   const materialSubtotal = filterMaterialTotal + detectorMaterialTotal;
@@ -573,126 +541,6 @@ document.getElementById("copyStatus").textContent =
   }
 }
 
-
-
-
-function getSelectedRepairQuoteItems() {
-  const items = [];
-  const repairMap = [
-    ["rqSprinkler", "Sprinkler / irrigation repair"],
-    ["rqGate", "Gate repair or adjustment"],
-    ["rqFence", "Fence repair or fence post replacement"],
-    ["rqDrywall", "Drywall repair"],
-    ["rqPlumbing", "Plumbing repair"],
-    ["rqElectrical", "Electrical repair"],
-    ["rqOther", "Other repair item"]
-  ];
-
-  repairMap.forEach(function(pair) {
-    const el = document.getElementById(pair[0]);
-    if (el && el.checked) items.push(pair[1]);
-  });
-
-  return items;
-}
-
-function buildRepairQuoteRequestText() {
-  const customerName = document.getElementById("customerName").value || "Customer";
-  const customerPhone = document.getElementById("customerPhone").value || "";
-  const customerEmail = document.getElementById("customerEmail").value || "";
-  const customerAddress = document.getElementById("customerAddress").value || "";
-  const planLabel = planDisplayNames[selectedPlan] || selectedPlan;
-  const serviceDate = getServiceDateText();
-  const nextServiceDate = getNextServiceDateText();
-  const repairItems = getSelectedRepairQuoteItems();
-  const notes = document.getElementById("repairQuoteNotes") ? document.getElementById("repairQuoteNotes").value.trim() : "";
-
-  return (
-    "REPAIR QUOTE REQUEST\n\n" +
-    "Source: Annual Maintenance App\n" +
-    "Status: Pending\n\n" +
-    "Customer: " + customerName + "\n" +
-    "Phone: " + customerPhone + "\n" +
-    "Email: " + customerEmail + "\n" +
-    "Property: " + customerAddress + "\n" +
-    "Maintenance Plan: " + planLabel + "\n" +
-    "Service Date: " + serviceDate + "\n" +
-    "Next Service Due: " + nextServiceDate + "\n\n" +
-    "Requested Repair Items:\n" +
-    (repairItems.length ? repairItems.map(function(item) { return "- " + item; }).join("\n") : "- No repair items selected") +
-    "\n\nRepair Notes:\n" +
-    (notes || "No additional repair notes entered.") +
-    "\n\nThis request is for repair work outside of the selected maintenance plan."
-  );
-}
-
-async function requestRepairQuote() {
-  const status = document.getElementById("repairQuoteRequestStatus");
-  const repairItems = getSelectedRepairQuoteItems();
-  const notes = document.getElementById("repairQuoteNotes") ? document.getElementById("repairQuoteNotes").value.trim() : "";
-
-  if (!repairItems.length && !notes) {
-    if (status) status.textContent = "Select at least one repair item or enter repair notes.";
-    return;
-  }
-
-  const customerName = document.getElementById("customerName").value || "";
-  const customerPhone = document.getElementById("customerPhone").value || "";
-  const customerEmail = document.getElementById("customerEmail").value || "";
-  const customerAddress = document.getElementById("customerAddress").value || "";
-  const planLabel = planDisplayNames[selectedPlan] || selectedPlan;
-  const requestText = buildRepairQuoteRequestText();
-
-  const data = {
-    requestNumber: "REPAIR-REQ-" + Date.now(),
-    sourceApp: "Annual Maintenance App",
-    recordType: "Repair Quote Request",
-    status: "Pending",
-    customerName: customerName,
-    phone: customerPhone,
-    email: customerEmail,
-    address: customerAddress,
-    service: "Repair Quote Request",
-    type: planLabel,
-    serviceDate: getServiceDateText(),
-    nextServiceDate: getNextServiceDateText(),
-    requestedRepairItems: repairItems.join(", "),
-    notes: notes,
-    requestText: requestText
-  };
-
-  document.getElementById("quoteOutput").value = requestText;
-
-  try {
-    await fetch("https://script.google.com/macros/s/AKfycbzpAvHREQwQRzolPg2KGiAIN86c5x7T6we86_NmKt7bMfIU90X4Wd3mXux19R05w4EtnQ/exec", {
-      method: "POST",
-      mode: "no-cors",
-      body: JSON.stringify(data),
-      headers: { "Content-Type": "text/plain" }
-    });
-
-    if (status) status.textContent = "Repair quote request sent. Check Google Sheets / Owner App pending queue.";
-    document.getElementById("copyStatus").textContent = "Repair quote request created.";
-  } catch (error) {
-    console.error(error);
-    if (status) status.textContent = "Connection error. Request text was created below and can be copied or emailed.";
-  }
-}
-
-function clearRepairQuoteRequest() {
-  [
-    "rqSprinkler", "rqGate", "rqFence", "rqDrywall", "rqPlumbing", "rqElectrical", "rqOther"
-  ].forEach(function(id) {
-    const el = document.getElementById(id);
-    if (el) el.checked = false;
-  });
-
-  const notes = document.getElementById("repairQuoteNotes");
-  if (notes) notes.value = "";
-
-  const status = document.getElementById("repairQuoteRequestStatus");
-  if (status) status.textContent = "Repair quote request cleared.";
-}
 
 function openGmailQuote() {
   const customerEmail = document.getElementById("customerEmail").value || "";
