@@ -40,18 +40,18 @@
   <p style="margin:0;opacity:.9;">
     Property maintenance plans for Southern California homeowners and property managers
   </p>
-</div> 
+</div>
 
     <div class="card">
       <h2>Customer Information</h2>
       <label for="customerName">Customer Name</label>
-      <input id="customerName" type="text" placeholder="Enter customer name">
+      <input id="customerName" name="moh_fld_a" type="text" placeholder="Enter customer name" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
       <label for="customerPhone">Phone Number</label>
-      <input id="customerPhone" type="text" placeholder="Enter phone number">
+      <input id="customerPhone" name="moh_fld_b" type="text" placeholder="Enter phone number" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
       <label for="customerEmail">Email Address</label>
-      <input id="customerEmail" type="email" placeholder="Enter customer email">
+      <input id="customerEmail" name="moh_fld_c" type="email" placeholder="Enter customer email" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
       <label for="customerAddress">Property Address</label>
-      <input id="customerAddress" type="text" placeholder="Enter property address">
+      <input id="customerAddress" name="moh_fld_d" type="text" placeholder="Enter property address" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
 
       <div style="margin-top:15px; padding:12px; border:1px solid #e2e8f0; border-radius:12px;">
         <strong>Maintenance Scheduling</strong>
@@ -71,7 +71,7 @@
 
     <div class="card">
       <h2>1. Property ZIP Code</h2>
-      <input id="area" placeholder="Enter property ZIP code">
+      <input id="area" name="moh_fld_e" placeholder="Enter property ZIP code" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
       <div id="zoneBox" style="display:none;"></div>
     </div>
 
